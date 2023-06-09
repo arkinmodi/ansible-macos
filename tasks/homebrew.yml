@@ -1,0 +1,53 @@
+---
+- name: Update All Homebrew Packages
+  community.general.homebrew:
+    upgrade_all: true
+
+- name: Install Homebrew Packages
+  community.general.homebrew:
+    state: present
+    name:
+      - bat
+      - bitwarden-cli
+      - fzf
+      - gh
+      - git
+      - jq
+      - neovim
+      - pyenv
+      - ripgrep
+      - stow
+      - stylua
+      - tmux
+      - tree
+      - watch
+      - wget
+      - zsh
+      - gnu-tar
+      - gnu-sed
+
+      # TODO: Install using pip (directly for github, not pypi (long time since publish))
+      - youtube-dl
+
+- name: Setup Homebrew Taps
+  community.general.homebrew_tap:
+    state: present
+    name:
+      - homebrew/cask-fonts
+
+- name: Install Homebrew Cask Packages
+  community.general.homebrew_cask:
+    state: present
+    name:
+      - alacritty
+      - bitwarden
+      - discord
+      - firefox
+      - font-hack-nerd-font
+      - google-chrome
+      - iterm2
+      - notion
+      - postman
+      - spotify
+      - visual-studio-code
+      - vlc

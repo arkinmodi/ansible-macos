@@ -1,0 +1,23 @@
+---
+- name: Set Desktop Backgroud
+  vars:
+    background_filepath: /System/Library/Desktop Pictures/Solid Colors/Black.png
+  block:
+    - name: Check Current Desktop Background
+      ansible.builtin.command: >
+        osascript
+        -e
+        'tell application "System Events" to get picture of every desktop'
+      register: current_background
+      changed_when: False
+
+    - name: Set Desktop Background
+      ansible.builtin.command: >
+        osascript
+        -e
+        'tell application "System Events" to tell every desktop to set picture to
+        "{{ background_filepath }}"'
+      vars:
+        current_background_list: "{{ current_background.stdout | split(', ') | unique }}"
+        target_background_list: "{{ [background_filepath] }}"
+      when: current_background_list != target_background_list
