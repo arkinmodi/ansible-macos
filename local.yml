@@ -2,6 +2,11 @@
 - hosts: localhost
 
   pre_tasks:
+    - name: Stop if not macOS
+      ansible.builtin.fail:
+        msg: This playbook is only for macOS.
+      when: ansible_os_family != 'Darwin'
+
     - name: Update Homebrew
       community.general.homebrew:
         update_homebrew: true

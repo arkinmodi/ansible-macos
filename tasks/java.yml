@@ -1,5 +1,6 @@
 ---
 - name: Download and Install Java & Purge Old Java
+  when: ansible_machine == 'arm64'
   vars:
     jdk_build_name: ibm-semeru-open-jdk_aarch64_mac_17.0.7_7_openj9-0.38.0
     jdk_version: jdk-17.0.7+7
