@@ -1,5 +1,6 @@
 ---
-- hosts: localhost
+- name: Personal macOS Environment
+  hosts: localhost
 
   pre_tasks:
     - name: Stop if not macOS
@@ -12,6 +13,11 @@
         update_homebrew: true
 
   tasks:
-    - ansible.builtin.import_tasks: tasks/homebrew.yml
-    - ansible.builtin.import_tasks: tasks/macos.yml
-    - ansible.builtin.import_tasks: tasks/java.yml
+    - name: Homwbrew
+      ansible.builtin.import_tasks: tasks/homebrew.yml
+    - name: MacOS
+      ansible.builtin.import_tasks: tasks/macos.yml
+    - name: Neovim
+      ansible.builtin.import_tasks: tasks/neovim.yml
+    - name: Java
+      ansible.builtin.import_tasks: tasks/java.yml
