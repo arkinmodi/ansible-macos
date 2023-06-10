@@ -8,6 +8,6 @@
       - stylua
 
 - name: Install Neovim Plugins
-  ansible.builtin.command: nvim --headless '+Lazy! sync' +qa
+  ansible.builtin.command: nvim --headless '+Lazy! restore' +qa
   register: result
   changed_when: result.stderr != ""
