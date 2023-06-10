@@ -11,10 +11,17 @@
       - virtualenv
       - yamllint
   block:
+    - name: Download virtualenv
+      ansible.builtin.get_url:
+        url: https://bootstrap.pypa.io/virtualenv.pyz
+        dest: /tmp/virtualenv.pyz
+        mode: "755"
+
     - name: Create virtualenv and Install Packages
       ansible.builtin.pip:
-        # virtualenv_python: /usr/bin/python3
         virtualenv: "{{ ansible_user_dir }}/opt/venv"
+        virtualenv_command: >
+          "{{ ansible_python.executable }} /tmp/virtualenv.pyz"
         state: latest  # noqa package-latest
         name: "{{ python_packages }}"
 
@@ -22,7 +29,7 @@
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/bin"
-        mode: "0600"
+        mode: "755"
 
     - name: Link Python Package Binaries
       ansible.builtin.file:

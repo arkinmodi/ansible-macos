@@ -47,3 +47,13 @@
       - spotify
       - visual-studio-code
       - vlc
+
+- name: Homebrew Autoremove
+  ansible.builtin.command: brew autoremove
+  register: autoremove
+  changed_when: autoremove.stdout != ""
+
+- name: Homebrew Cleanup
+  ansible.builtin.command: brew cleanup
+  register: cleanup
+  changed_when: cleanup.stdout != ""
