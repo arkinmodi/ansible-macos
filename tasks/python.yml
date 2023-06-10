@@ -1,0 +1,31 @@
+---
+- name: Setup virtualenv
+  vars:
+    python_packages:
+      - autopep8
+      - bwenv
+      - flake8
+      - mypy
+      - tox
+      - twine
+      - virtualenv
+      - yamllint
+  block:
+    - name: Create virtualenv and Install Packages
+      ansible.builtin.pip:
+        # virtualenv_python: /usr/bin/python3
+        virtualenv: "{{ ansible_user_dir }}/opt/venv"
+        state: latest
+        name: "{{ python_packages }}"
+
+    - name: Ensure bin folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/bin"
+
+    - name: Link Python Package Binaries
+      ansible.builtin.file:
+        state: link
+        src: "{{ ansible_user_dir }}/opt/venv/bin/{{ item }}"
+        dest: "{{ ansible_user_dir }}/bin/{{ item }}"
+      loop: "{{ python_packages }}"

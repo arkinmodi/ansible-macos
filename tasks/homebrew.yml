@@ -15,8 +15,6 @@
       - gnu-sed
       - gnu-tar
       - jq
-      - neovim
-      - pyenv
       - tmux
       - tree
       - watch
