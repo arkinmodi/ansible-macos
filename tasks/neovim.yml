@@ -1,0 +1,13 @@
+---
+- name: Install Neovim and Dependencies
+  community.general.homebrew:
+    state: present
+    name:
+      - neovim
+      - ripgrep
+      - stylua
+
+- name: Install Neovim Plugins
+  ansible.builtin.command: nvim --headless '+Lazy! sync' +qa
+  register: result
+  changed_when: result.stderr != ""
