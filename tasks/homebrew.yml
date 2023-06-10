@@ -12,19 +12,16 @@
       - fzf
       - gh
       - git
+      - gnu-sed
+      - gnu-tar
       - jq
       - neovim
       - pyenv
-      - ripgrep
-      - stow
-      - stylua
       - tmux
       - tree
       - watch
       - wget
       - zsh
-      - gnu-tar
-      - gnu-sed
 
       # TODO: Install using pip
       # (directly for github, not pypi (long time since publish))

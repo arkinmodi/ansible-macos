@@ -5,6 +5,7 @@
     xcode-select --install
     ```
 1. Install [Homebrew](https://brew.sh/)
+1. Setup GitHub SSH keys
 1. Install [Ansible](https://www.ansible.com/) via Homebrew
     ```sh
     brew install ansible

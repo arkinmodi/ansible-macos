@@ -1,0 +1,17 @@
+---
+- name: Clone dotfiles Repo
+  ansible.builtin.git:
+    repo: git@github.com:arkinmodi/dotfiles
+    dest: "{{ ansible_user_dir }}/.dotfiles"
+    recursive: true
+  environment:
+    GIT_TERMINAL_PROMPT: 0
+
+- name: Install Stow
+  community.general.homebrew:
+    state: present
+    name:
+      - stow
+
+# - name: Run Stow
+#   ansible.builtin.command: "./{{ ansible_user_dir }}/install.sh"
