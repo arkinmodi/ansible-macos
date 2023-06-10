@@ -25,3 +25,5 @@
       ansible.builtin.import_tasks: tasks/python.yml
     - name: Java
       ansible.builtin.import_tasks: tasks/java.yml
+    - name: Podman
+      ansible.builtin.import_tasks: tasks/podman.yml

@@ -1,0 +1,14 @@
+---
+- name: Install Podman
+  community.general.homebrew:
+    state: present
+    name:
+      - podman
+
+- name: Create Podman Machine
+  ansible.builtin.command: podman machine init
+  register: machine_init
+  changed_when: machine_init.rc == 0
+  failed_when:
+    - machine_init.rc != 0
+    - machine_init.rc != 125  # machine already exists
