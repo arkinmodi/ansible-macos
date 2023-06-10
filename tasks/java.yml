@@ -12,11 +12,13 @@
         url: "https://github.com/ibmruntimes/semeru17-binaries/releases/download/jdk-17.0.7%2B7_openj9-0.38.0/{{ jdk_build_name }}.tar.gz"  # yamllint disable-line rule:line-length
         checksum: sha256:da95343f2cc6ec7e4bd6ed720183b6e9e8d6639df15b2e49ff15a2b5a3780cd7  # yamllint disable-line rule:line-length
         dest: "/tmp/{{ jdk_build_name }}.tar.gz"
+        mode: "0755"
 
     - name: Ensure opt folder
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}"
+        mode: "0600"
 
     - name: Unarchive JDK tar
       ansible.builtin.unarchive:
@@ -25,11 +27,13 @@
         remote_src: true
         creates: >
           "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}/{{ jdk_version }}"
+        mode: "0600"
 
     - name: Ensure bin folder
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/bin"
+        mode: "0600"
 
     - name: Link JDK Binaries
       ansible.builtin.file:

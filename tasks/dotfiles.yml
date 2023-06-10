@@ -1,11 +1,9 @@
 ---
-- name: Clone dotfiles Repo
+- name: Clone dotfiles Repo  # noqa latest[git]
   ansible.builtin.git:
     repo: git@github.com:arkinmodi/dotfiles
     dest: "{{ ansible_user_dir }}/.dotfiles"
     recursive: true
-  environment:
-    GIT_TERMINAL_PROMPT: 0
 
 - name: Install Stow
   community.general.homebrew:
