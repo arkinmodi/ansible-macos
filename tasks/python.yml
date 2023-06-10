@@ -10,6 +10,7 @@
       - twine
       - virtualenv
       - yamllint
+      - youtube-dl
   block:
     - name: Download virtualenv
       ansible.builtin.get_url:

@@ -21,10 +21,6 @@
       - wget
       - zsh
 
-      # TODO: Install using pip
-      # (directly for github, not pypi (long time since publish))
-      - youtube-dl
-
 - name: Setup Homebrew Taps
   community.general.homebrew_tap:
     state: present
