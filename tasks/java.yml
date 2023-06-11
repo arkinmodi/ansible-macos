@@ -2,31 +2,31 @@
 - name: Download and Install Java & Purge Old Java
   when: ansible_machine == 'arm64'
   vars:
-    jdk_build_name: ibm-semeru-open-jdk_aarch64_mac_17.0.7_7_openj9-0.38.0
+    jdk_archive_name: ibm-semeru-open-jdk_aarch64_mac_17.0.7_7_openj9-0.38.0
     jdk_version: jdk-17.0.7+7
   block:
-    - name: Download JDK
+    - name: Download JDK tar
       ansible.builtin.get_url:
         # https://developer.ibm.com/languages/java/semeru-runtimes/downloads/
         # https://github.com/ibmruntimes/semeru17-binaries/releases
-        url: "https://github.com/ibmruntimes/semeru17-binaries/releases/download/jdk-17.0.7%2B7_openj9-0.38.0/{{ jdk_build_name }}.tar.gz"  # yamllint disable-line rule:line-length
+        url: "https://github.com/ibmruntimes/semeru17-binaries/releases/download/jdk-17.0.7%2B7_openj9-0.38.0/{{ jdk_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
         checksum: sha256:da95343f2cc6ec7e4bd6ed720183b6e9e8d6639df15b2e49ff15a2b5a3780cd7  # yamllint disable-line rule:line-length
-        dest: "/tmp/{{ jdk_build_name }}.tar.gz"
+        dest: "/tmp/{{ jdk_archive_name }}.tar.gz"
         mode: "755"
 
     - name: Ensure opt folder
       ansible.builtin.file:
         state: directory
-        path: "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}"
+        path: "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}"
         mode: "755"
 
     - name: Unarchive JDK tar
       ansible.builtin.unarchive:
-        src: "/tmp/{{ jdk_build_name }}.tar.gz"
-        dest: "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}"
+        src: "/tmp/{{ jdk_archive_name }}.tar.gz"
+        dest: "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}"
         remote_src: true
         creates: >
-          "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}/{{ jdk_version }}"
+          "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}/{{ jdk_version }}"
         mode: "755"
 
     - name: Ensure bin folder
@@ -41,7 +41,7 @@
         src: "{{ item }}"
         dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
       with_fileglob:
-        - "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}/{{ jdk_version }}\
+        - "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}/{{ jdk_version }}\
            /Contents/Home/bin/*"
 
     - name: Find Old JDKs
@@ -57,6 +57,6 @@
         path: "{{ item.path }}"
       vars:
         paths_to_keep:
-          - "{{ ansible_user_dir }}/opt/{{ jdk_build_name }}"
+          - "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_jdks.files }}"
