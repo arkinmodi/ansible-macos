@@ -23,6 +23,8 @@
       ansible.builtin.import_tasks: tasks/neovim.yml
     - name: Python 3
       ansible.builtin.import_tasks: tasks/python.yml
+    - name: Node
+      ansible.builtin.import_tasks: tasks/node.yml
     - name: Java
       ansible.builtin.import_tasks: tasks/java.yml
     - name: Podman
