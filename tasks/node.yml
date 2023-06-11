@@ -55,4 +55,3 @@
           - "{{ ansible_user_dir }}/opt/{{ node_archive_name }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_node.files }}"
-
