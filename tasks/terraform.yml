@@ -1,0 +1,57 @@
+---
+- name: Install Terraform
+  vars:
+    terraform_version: 1.4.6
+    terraform_archive_name: terraform_1.4.6_darwin_arm64
+  block:
+    - name: Download Terraform zip
+      ansible.builtin.get_url:
+        url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_archive_name }}.zip"  # yamllint disable-line rule:line-length
+        checksum: sha256:30a2f87298ff9f299452119bd14afaa8d5b000c572f62fa64baf432e35d9dec1  # yamllint disable-line rule:line-length
+        dest: "/tmp/{{ terraform_archive_name }}.zip"
+        mode: "755"
+
+    - name: Ensure opt folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}"
+        mode: "755"
+
+    - name: Unzip Terraform zip
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ terraform_archive_name }}.zip"
+        dest: "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}"
+        remote_src: true
+        creates: >
+          "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}/terraform"
+        mode: "755"
+
+    - name: Ensure bin folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/bin"
+        mode: "755"
+
+    - name: Link Terraform Binary
+      ansible.builtin.file:
+        state: link
+        src: "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}/terraform"
+        dest: "{{ ansible_user_dir }}/bin/terraform"
+
+    - name: Find Old Terraform
+      ansible.builtin.find:
+        paths: "{{ ansible_user_dir }}/opt"
+        pattern: "terraform_*"
+        file_type: directory
+      register: old_terraform
+
+    - name: Purge Old Terraform
+      ansible.builtin.file:
+        state: absent
+        path: "{{ item.path }}"
+      vars:
+        paths_to_keep:
+          - "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}"
+      when: item.path not in paths_to_keep
+      loop: "{{ old_terraform.files }}"
+

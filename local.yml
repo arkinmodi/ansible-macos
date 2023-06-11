@@ -29,3 +29,5 @@
       ansible.builtin.import_tasks: tasks/java.yml
     - name: Podman
       ansible.builtin.import_tasks: tasks/podman.yml
+    - name: Terraform
+      ansible.builtin.import_tasks: tasks/terraform.yml
