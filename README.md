@@ -12,7 +12,7 @@
     ```
 1. Run setup playbook
     ```sh
-    ansible-pull -U https://github.com/arkinmodi/ansible-macos
+    ansible-pull --url https://github.com/arkinmodi/ansible-macos
 
     # Or if cloned locally
     ansible-playbook local.yml
