@@ -1,0 +1,41 @@
+---
+- name: Install tmux
+  community.general.homebrew:
+    state: present
+    name:
+      - tmux
+
+# macOS ncurses does not ship the terminfo description for tmux
+- name: Check for tmux terminfo
+  ansible.builtin.command: infocmp tmux-256color
+  register: infocmp_tmux
+  ignore_errors: true
+  changed_when: false
+
+- name: Setup tmux terminfo
+  when: infocmp_tmux.rc != 0
+  vars:
+    # terminfo defaults to root's home when running as sudo
+    # ansible facts change to root's when running as sudo
+    terminfo_home: "{{ ansible_user_dir }}/.terminfo"
+  block:
+    - name: Install newer ncurses
+      community.general.homebrew:
+        state: present
+        name:
+          - ncurses
+
+    - name: Get ncurses install location
+      ansible.builtin.command: brew --prefix ncurses
+      register: ncurses_location
+      changed_when: false
+
+    - name: Save tmux terminfo to file
+      ansible.builtin.shell:
+        cmd: "{{ ncurses_location.stdout }}/bin/infocmp tmux-256color > /tmp/tmux-256color.info"
+        creates: /tmp/tmux-256color.info
+
+    - name: Create tmux terminfo
+      ansible.builtin.command: >
+        "tic -o {{ terminfo_home }} -xe tmux-256color /tmp/tmux-256color.info"
+      become: true
