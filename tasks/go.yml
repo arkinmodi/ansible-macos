@@ -1,0 +1,58 @@
+---
+- name: Download and Install Go & Purge Old Go
+  when: ansible_machine == 'arm64'
+  vars:
+    go_archive_name: go1.20.5.darwin-arm64
+  block:
+    - name: Download Go tar
+      ansible.builtin.get_url:
+        # https://go.dev/dl/
+        url: "https://go.dev/dl/{{ go_archive_name }}.tar.gz"
+        checksum: sha256:94ad76b7e1593bb59df7fd35a738194643d6eed26a4181c94e3ee91381e40459  # yamllint disable-line rule:line-length
+        dest: "/tmp/{{ go_archive_name }}.tar.gz"
+        mode: "755"
+
+    - name: Ensure opt folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/opt/{{ go_archive_name }}"
+        mode: "755"
+
+    - name: Unarchive Go tar
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ go_archive_name }}.tar.gz"
+        dest: "{{ ansible_user_dir }}/opt/{{ go_archive_name }}"
+        remote_src: true
+        creates: "{{ ansible_user_dir }}/opt/{{ go_archive_name }}/go"
+        mode: "755"
+
+    - name: Ensure bin folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/bin"
+        mode: "755"
+
+    - name: Link Go Binaries
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+      with_fileglob:
+        - "{{ ansible_user_dir }}/opt/{{ go_archive_name }}/go/bin/*"
+
+    - name: Find Old Go
+      ansible.builtin.find:
+        paths: "{{ ansible_user_dir }}/opt"
+        pattern: "go*"
+        file_type: directory
+      register: old_gos
+
+    - name: Purge Old Go
+      ansible.builtin.file:
+        state: absent
+        path: "{{ item.path }}"
+      vars:
+        paths_to_keep:
+          - "{{ ansible_user_dir }}/opt/{{ go_archive_name }}"
+      when: item.path not in paths_to_keep
+      loop: "{{ old_gos.files }}"
