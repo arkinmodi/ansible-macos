@@ -32,10 +32,11 @@
 
     - name: Save tmux terminfo to file
       ansible.builtin.shell:
-        cmd: "{{ ncurses_location.stdout }}/bin/infocmp tmux-256color > /tmp/tmux-256color.info"
+        cmd: "{{ ncurses_location.stdout }}/bin/infocmp tmux-256color > /tmp/tmux-256color.info"  # yamllint disable-line rule:line-length
         creates: /tmp/tmux-256color.info
 
     - name: Create tmux terminfo
       ansible.builtin.command: >
         "tic -o {{ terminfo_home }} -xe tmux-256color /tmp/tmux-256color.info"
       become: true
+      changed_when: true
