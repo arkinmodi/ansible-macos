@@ -12,8 +12,8 @@
     ```
 1. Run setup playbook
     ```sh
-    ansible-pull --url https://github.com/arkinmodi/ansible-macos
+    ansible-pull --ask-become-pass --url https://github.com/arkinmodi/ansible-macos
 
     # Or if cloned locally
-    ansible-playbook local.yml
+    ansible-playbook --ask-become-pass local.yml
     ```
