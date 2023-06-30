@@ -5,7 +5,6 @@
       - autopep8
       - bwenv
       - flake8
-      - mypy
       - podman-compose
       - tox
       - twine
