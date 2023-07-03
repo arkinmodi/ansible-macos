@@ -12,14 +12,17 @@
       - fzf
       - gh
       - git
-      - gnu-sed
-      - gnu-tar
       - jq
       - tmux
       - tree
       - watch
       - wget
       - zsh
+
+      # Use GNU versions over BSD
+      - findutils
+      - gnu-sed
+      - gnu-tar
 
 - name: Setup Homebrew Taps
   community.general.homebrew_tap:
