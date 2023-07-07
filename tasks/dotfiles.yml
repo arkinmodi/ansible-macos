@@ -47,5 +47,5 @@
     - name: Link tmux Configurations
       ansible.builtin.file:
         state: link
-        src: "{{ dotfiles_dir }}/tmux/.tmux.conf"
-        dest: "{{ ansible_user_dir }}/.tmux.conf"
+        src: "{{ dotfiles_dir }}/tmux/.config/tmux"
+        dest: "{{ ansible_user_dir }}/.config/tmux"
