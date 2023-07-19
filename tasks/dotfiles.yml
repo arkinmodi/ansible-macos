@@ -49,3 +49,11 @@
         state: link
         src: "{{ dotfiles_dir }}/tmux/.config/tmux"
         dest: "{{ ansible_user_dir }}/.config/tmux"
+
+    - name: Link User Scripts
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+      with_fileglob:
+        - "{{ dotfiles_dir }}/scripts/*"

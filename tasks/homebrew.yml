@@ -13,6 +13,7 @@
       - gh
       - git
       - jq
+      - parallel
       - tmux
       - tree
       - watch
