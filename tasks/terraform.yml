@@ -1,5 +1,6 @@
 ---
 - name: Install Terraform
+  when: ansible_machine == 'arm64'
   vars:
     terraform_version: 1.4.6
     terraform_archive_name: terraform_1.4.6_darwin_arm64

@@ -1,5 +1,6 @@
 ---
 - name: Install Nodejs
+  when: ansible_machine == 'arm64'
   vars:
     node_version: v18.16.0
     node_archive_name: node-v18.16.0-darwin-arm64
