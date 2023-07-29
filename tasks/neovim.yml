@@ -1,11 +1,51 @@
 ---
-- name: Install Neovim and Dependencies
+- name: Remove Homebrew Neovim
+  community.general.homebrew:
+    state: absent
+    name: neovim
+
+- name: Install Neovim Dependencies
   community.general.homebrew:
     state: present
     name:
-      - neovim
       - ripgrep
       - stylua
+
+      # Build deps
+      - ninja
+      - cmake
+      - gettext
+      - curl
+      - ccache
+
+- name: Ensure opt folder
+  ansible.builtin.file:
+    state: directory
+    path: "{{ ansible_user_dir }}/opt/neovim"
+    mode: "755"
+
+- name: Clone Neovim Repo  # noqa latest[git]
+  ansible.builtin.git:
+    repo: git@github.com:neovim/neovim
+    dest: "{{ ansible_user_dir }}/opt/neovim/repo"
+    accept_newhostkey: true
+    depth: 1
+  register: clone
+
+- name: Build & Install Neovim
+  when: clone.before != clone.after
+  community.general.make:
+    target: install
+    chdir: "{{ ansible_user_dir }}/opt/neovim/repo"
+    params:
+      CMAKE_BUILD_TYPE: Release
+      CMAKE_INSTALL_PREFIX: "{{ ansible_user_dir }}/opt/neovim/build"
+
+- name: Link Neovim
+  ansible.builtin.file:
+    state: link
+    src: "{{ ansible_user_dir }}/opt/neovim/build/bin/nvim"
+    dest: "{{ ansible_user_dir }}/bin/nvim"
 
 - name: Install Neovim Plugins
   ansible.builtin.command: nvim --headless '+Lazy! restore' +qa

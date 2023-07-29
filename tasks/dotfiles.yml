@@ -9,6 +9,7 @@
         repo: "{{ dotfiles_github }}"
         dest: "{{ dotfiles_dir }}"
         recursive: true
+        accept_newhostkey: true
 
     - name: Link zsh Configurations
       vars:

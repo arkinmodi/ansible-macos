@@ -19,8 +19,6 @@
       ansible.builtin.import_tasks: tasks/dotfiles.yml
     - name: MacOS
       ansible.builtin.import_tasks: tasks/macos.yml
-    - name: Neovim
-      ansible.builtin.import_tasks: tasks/neovim.yml
     - name: Tmux
       ansible.builtin.import_tasks: tasks/tmux.yml
     - name: Python 3
@@ -35,3 +33,5 @@
       ansible.builtin.import_tasks: tasks/podman.yml
     - name: Terraform
       ansible.builtin.import_tasks: tasks/terraform.yml
+    - name: Neovim
+      ansible.builtin.import_tasks: tasks/neovim.yml
