@@ -1,9 +1,4 @@
 ---
-- name: Remove Homebrew Neovim
-  community.general.homebrew:
-    state: absent
-    name: neovim
-
 - name: Install Neovim Dependencies
   community.general.homebrew:
     state: present
@@ -51,3 +46,8 @@
   ansible.builtin.command: nvim --headless '+Lazy! restore' +qa
   register: result
   changed_when: result.stderr != ""
+
+- name: Remove Homebrew Neovim
+  community.general.homebrew:
+    state: absent
+    name: neovim
