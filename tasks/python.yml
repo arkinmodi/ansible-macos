@@ -31,7 +31,7 @@
           "{{ target_venv }}"
         creates: "{{ target_venv }}/bin/python"
 
-    - name: Install Packages
+    - name: Install Python Packages
       ansible.builtin.pip:
         virtualenv: "{{ target_venv }}"
         state: latest  # noqa package-latest

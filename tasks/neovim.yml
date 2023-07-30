@@ -7,11 +7,11 @@
       - stylua
 
       # Build deps
-      - ninja
-      - cmake
-      - gettext
-      - curl
       - ccache
+      - cmake
+      - curl
+      - gettext
+      - ninja
 
 - name: Ensure opt folder
   ansible.builtin.file:
