@@ -37,14 +37,12 @@
     name:
       - alacritty
       - bitwarden
-      - discord
       - firefox
       - font-hack-nerd-font
+      - gimp
       - google-chrome
+      - inkscape
       - iterm2
-      - notion
-      - postman
-      - spotify
       - visual-studio-code
       - vlc
 
