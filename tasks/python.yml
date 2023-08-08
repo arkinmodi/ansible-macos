@@ -49,12 +49,12 @@
         src: "{{ item }}"
         dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
       with_fileglob:
-        - "{{ ansible_user_dir }}/opt/venv/bin/pip"
-        - "{{ ansible_user_dir }}/opt/venv/bin/pip3"
-        - "{{ ansible_user_dir }}/opt/venv/bin/pip3.*"
-        - "{{ ansible_user_dir }}/opt/venv/bin/python"
-        - "{{ ansible_user_dir }}/opt/venv/bin/python3"
-        - "{{ ansible_user_dir }}/opt/venv/bin/python3.*"
+        - "{{ target_venv }}/bin/pip"
+        - "{{ target_venv }}/bin/pip3"
+        - "{{ target_venv }}/bin/pip3.*"
+        - "{{ target_venv }}/bin/python"
+        - "{{ target_venv }}/bin/python3"
+        - "{{ target_venv }}/bin/python3.*"
 
     - name: Link Python Package Binaries
       ansible.builtin.file:
