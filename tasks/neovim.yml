@@ -27,6 +27,12 @@
     depth: 1
   register: clone
 
+- name: Remove Old Neovim Build
+  when: clone.before != clone.after
+  ansible.builtin.file:
+    state: absent
+    path: "{{ ansible_user_dir }}/opt/neovim/repo/build"
+
 - name: Build & Install Neovim
   when: clone.before != clone.after
   community.general.make:
