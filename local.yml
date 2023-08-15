@@ -35,5 +35,7 @@
       ansible.builtin.import_tasks: tasks/terraform.yml
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
+    - name: AWS CLI
+      ansible.builtin.import_tasks: tasks/awscli.yml
     - name: Ansible
       ansible.builtin.import_tasks: tasks/ansible.yml

@@ -1,0 +1,44 @@
+---
+- name: Setup AWS CLI
+  vars:
+    target_venv: "{{ ansible_user_dir }}/opt/awscli-venv"
+    python_packages:
+      - awscli
+  block:
+    - name: Download virtualenv
+      ansible.builtin.get_url:
+        url: https://bootstrap.pypa.io/virtualenv.pyz
+        dest: /tmp/virtualenv.pyz
+        mode: "755"
+
+    # virutalenv.pyz path cannot contain symlinks
+    # In macOS, /tmp is a symlink to /private/tmp
+    # See https://github.com/pypa/virtualenv/issues/1949
+    - name: Create AWS CLI virtualenv
+      ansible.builtin.command:
+        cmd: >
+          "{{ ansible_python.executable }}"
+          /private/tmp/virtualenv.pyz
+          -p /usr/bin/python3
+          "{{ target_venv }}"
+        creates: "{{ target_venv }}/bin/python"
+
+    - name: Install AWS CLI Packages
+      ansible.builtin.pip:
+        virtualenv: "{{ target_venv }}"
+        state: latest  # noqa package-latest
+        name: "{{ python_packages }}"
+
+    - name: Ensure bin folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/bin"
+        mode: "755"
+
+    - name: Link AWS CLI Package Binaries
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+      with_fileglob:
+        - "{{ target_venv }}/bin/aws"
