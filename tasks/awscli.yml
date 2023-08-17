@@ -4,6 +4,7 @@
     target_venv: "{{ ansible_user_dir }}/opt/awscli-venv"
     python_packages:
       - awscli
+      - aws-sam-cli
   block:
     - name: Download virtualenv
       ansible.builtin.get_url:
@@ -42,3 +43,4 @@
         dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
       with_fileglob:
         - "{{ target_venv }}/bin/aws"
+        - "{{ target_venv }}/bin/sam"

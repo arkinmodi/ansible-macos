@@ -4,6 +4,7 @@
     target_venv: "{{ ansible_user_dir }}/opt/venv"
     python_packages:
       - autopep8
+      - awshelp
       - bwenv
       - flake8
       - podman-compose
