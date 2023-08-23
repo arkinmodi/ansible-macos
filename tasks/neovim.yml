@@ -3,9 +3,6 @@
   community.general.homebrew:
     state: present
     name:
-      - ripgrep
-      - stylua
-
       # Build deps
       - ccache
       - cmake
