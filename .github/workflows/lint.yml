@@ -7,21 +7,31 @@ name: Linting
       - main
 
 jobs:
-  code_lint:
-    name: 🧽 Lint Code Base
+  ansible-lint:
     runs-on: ubuntu-latest
     steps:
-      - name: 🛎 Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.x"
 
-      - run: pip install ansible yamllint ansible-lint
+      - run: pip install ansible ansible-lint
       - run: ansible-galaxy collection install community.general
-      - run: yamllint --strict .
       - run: ansible-lint
+
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - run: pip install yamllint
+      - run: yamllint --strict .
