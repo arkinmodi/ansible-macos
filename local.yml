@@ -29,6 +29,8 @@
       ansible.builtin.import_tasks: tasks/java.yml
     - name: Go
       ansible.builtin.import_tasks: tasks/go.yml
+    - name: Rust
+      ansible.builtin.import_tasks: tasks/rust.yml
     - name: Podman
       ansible.builtin.import_tasks: tasks/podman.yml
     - name: Terraform
