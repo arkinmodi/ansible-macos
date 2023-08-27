@@ -13,6 +13,8 @@
       - rust-analyzer
 
     rust_packages:
+      - package_name: fd-find
+        binary_name: fd
       - package_name: ripgrep
         binary_name: rg
       - package_name: stylua

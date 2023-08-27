@@ -8,6 +8,8 @@
       - bwenv
       - flake8
       - podman-compose
+      - pynvim
+      - tldr
       - tox
       - twine
       - virtualenv
@@ -62,4 +64,8 @@
         state: link
         src: "{{ target_venv }}/bin/{{ item }}"
         dest: "{{ ansible_user_dir }}/bin/{{ item }}"
+      vars:
+        no_binary:
+          - pynvim
+      when: item not in no_binary
       loop: "{{ python_packages }}"
