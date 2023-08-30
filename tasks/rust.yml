@@ -2,9 +2,10 @@
 - name: Install Rust
   when: ansible_machine == 'arm64'
   vars:
-    rust_version: 1.71.1
+    rust_version: 1.72.0
     rust_archive_name: "rust-{{ rust_version }}"
 
+    # https://rust-lang.github.io/rustup/installation/other.html
     rustup_version: 1.26.0
     rustup_sha256: ed299a8fe762dc28161a99a03cf62836977524ad557ad70e13882d2f375d3983  # yamllint disable-line rule:line-length
     rustup_arch: aarch64-apple-darwin
@@ -50,18 +51,13 @@
     - name: Install Rust Components
       ansible.builtin.command:
         argv:
-          - rustup
+          - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/rustup"  # yamllint disable-line rule:line-length
           - component
           - add
           - "{{ item }}"
       loop: "{{ rust_components }}"
       register: result
       changed_when: "'is up to date' not in result.stderr"
-
-    - name: Install Rust Packages
-      community.general.cargo:
-        name: "{{ rust_packages | map(attribute='package_name') }}"
-        state: latest
 
     - name: Ensure bin folder
       ansible.builtin.file:
@@ -77,6 +73,11 @@
       with_fileglob:
         - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/cargo*"
         - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/rust*"
+
+    - name: Install Rust Packages
+      community.general.cargo:
+        name: "{{ rust_packages | map(attribute='package_name') }}"
+        state: latest
 
     - name: Link Rust Package Binaries
       ansible.builtin.file:
