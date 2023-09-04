@@ -9,8 +9,8 @@
     name:
       - bat
       - bitwarden-cli
+      - clang-format
       - fzf
-      - gh
       - git
       - go-task
       - jq

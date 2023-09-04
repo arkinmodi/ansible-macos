@@ -13,7 +13,7 @@
         update_homebrew: true
 
   tasks:
-    - name: Homwbrew
+    - name: Homebrew
       ansible.builtin.import_tasks: tasks/homebrew.yml
     - name: Dotfiles
       ansible.builtin.import_tasks: tasks/dotfiles.yml

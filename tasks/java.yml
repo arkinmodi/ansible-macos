@@ -4,29 +4,29 @@
   vars:
     jdk_archive_name: ibm-semeru-open-jdk_aarch64_mac_17.0.7_7_openj9-0.38.0
     jdk_version: jdk-17.0.7+7
+    jdk_sha256: da95343f2cc6ec7e4bd6ed720183b6e9e8d6639df15b2e49ff15a2b5a3780cd7
   block:
     - name: Download JDK tar
       ansible.builtin.get_url:
         # https://developer.ibm.com/languages/java/semeru-runtimes/downloads/
         # https://github.com/ibmruntimes/semeru17-binaries/releases
         url: "https://github.com/ibmruntimes/semeru17-binaries/releases/download/jdk-17.0.7%2B7_openj9-0.38.0/{{ jdk_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
-        checksum: sha256:da95343f2cc6ec7e4bd6ed720183b6e9e8d6639df15b2e49ff15a2b5a3780cd7  # yamllint disable-line rule:line-length
+        checksum: "sha256:{{ jdk_sha256 }}"
         dest: "/tmp/{{ jdk_archive_name }}.tar.gz"
         mode: "755"
 
     - name: Ensure opt folder
       ansible.builtin.file:
         state: directory
-        path: "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}"
+        path: "{{ ansible_user_dir }}/opt/java/{{ jdk_archive_name }}"
         mode: "755"
 
     - name: Unarchive JDK tar
       ansible.builtin.unarchive:
         src: "/tmp/{{ jdk_archive_name }}.tar.gz"
-        dest: "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}"
+        dest: "{{ ansible_user_dir }}/opt/java/{{ jdk_archive_name }}"
         remote_src: true
-        creates: >
-          "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}/{{ jdk_version }}"
+        creates: "{{ ansible_user_dir }}/opt/java/{{ jdk_archive_name }}/{{ jdk_version }}"  # yamllint disable-line rule:line-length
         mode: "755"
 
     - name: Ensure bin folder
@@ -41,12 +41,11 @@
         src: "{{ item }}"
         dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
       with_fileglob:
-        - "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}/{{ jdk_version }}\
-           /Contents/Home/bin/*"
+        - "{{ ansible_user_dir }}/opt/java/{{ jdk_archive_name }}/{{ jdk_version }}/Contents/Home/bin/*"  # yamllint disable-line rule:line-length
 
     - name: Find Old JDKs
       ansible.builtin.find:
-        paths: "{{ ansible_user_dir }}/opt"
+        paths: "{{ ansible_user_dir }}/opt/java"
         pattern: "*jdk*"
         file_type: directory
       register: old_jdks
@@ -57,6 +56,65 @@
         path: "{{ item.path }}"
       vars:
         paths_to_keep:
-          - "{{ ansible_user_dir }}/opt/{{ jdk_archive_name }}"
+          - "{{ ansible_user_dir }}/opt/java/{{ jdk_archive_name }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_jdks.files }}"
+
+- name: Download and Install Eclipse JDT Language Server & Purge Old Versions
+  vars:
+    # https://download.eclipse.org/jdtls/milestones
+    jdtls_version: 1.26.0
+    jdtls_archive_name: "jdt-language-server-{{ jdtls_version }}-202307271613"
+    jdtls_sha256: ba5fe5ee3b2a8395287e24aef20ce6e17834cf8e877117e6caacac6a688a6c53  # yamllint disable-line rule:line-length
+  block:
+    - name: Download Eclipse JDT Language Server tar
+      ansible.builtin.get_url:
+        url: "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/{{ jdtls_version }}/{{ jdtls_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
+        checksum: "sha256:{{ jdtls_sha256 }}"
+        dest: "/tmp/{{ jdtls_archive_name }}.tar.gz"
+        mode: "755"
+
+    - name: Ensure opt folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}"
+        mode: "755"
+
+    - name: Unarchive Eclipse JDT Language Server tar
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ jdtls_archive_name }}.tar.gz"
+        dest: "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}"
+        remote_src: true
+        creates: "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}/{{ jdtls_version }}"  # yamllint disable-line rule:line-length
+        mode: "755"
+
+    - name: Ensure bin folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/bin"
+        mode: "755"
+
+    - name: Link Eclipse JDT Language Server Binaries
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+      with_fileglob:
+        - "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}/bin/*"
+
+    - name: Find Old Eclipse JDT Language Servers
+      ansible.builtin.find:
+        paths: "{{ ansible_user_dir }}/opt/java"
+        pattern: "jdt-language-server-*"
+        file_type: directory
+      register: old_jdtls
+
+    - name: Purge Old Eclipse JDT Language Servers
+      ansible.builtin.file:
+        state: absent
+        path: "{{ item.path }}"
+      vars:
+        paths_to_keep:
+          - "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}"
+      when: item.path not in paths_to_keep
+      loop: "{{ old_jdtls.files }}"

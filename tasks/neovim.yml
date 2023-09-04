@@ -16,7 +16,7 @@
     path: "{{ ansible_user_dir }}/opt/neovim"
     mode: "755"
 
-- name: Clone Neovim Repo  # noqa latest[git]
+- name: Clone Neovim Repo
   ansible.builtin.git:
     accept_newhostkey: true
     depth: 1
