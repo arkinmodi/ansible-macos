@@ -4,6 +4,15 @@
   vars:
     node_version: v18.16.0
     node_archive_name: node-v18.16.0-darwin-arm64
+
+    npm_packages:
+      - "@astrojs/language-server"
+      - "@tailwindcss/language-server"
+      - prettier
+      - typescript
+      - typescript-language-server
+      - vscode-langservers-extracted
+      - yaml-language-server
   block:
     - name: Download Nodejs tar
       ansible.builtin.get_url:
@@ -26,13 +35,21 @@
         creates: "{{ ansible_user_dir }}/opt/{{ node_archive_name }}"
         mode: "755"
 
+    - name: Install NPM Packages
+      community.general.npm:
+        executable: "{{ ansible_user_dir }}/opt/{{ node_archive_name }}/bin/npm"
+        global: true
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ npm_packages }}"
+
     - name: Ensure bin folder
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/bin"
         mode: "755"
 
-    - name: Link Nodejs Binaries
+    - name: Link Nodejs and NPM Package Binaries
       ansible.builtin.file:
         state: link
         src: "{{ item }}"

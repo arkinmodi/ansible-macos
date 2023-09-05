@@ -118,3 +118,23 @@
           - "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_jdtls.files }}"
+
+- name: Download Lombok
+  vars:
+    # https://projectlombok.org/download
+    lombok_version: 1.18.28
+    lombok_archive_name: "lombok-{{ lombok_version }}"
+    lombok_sha256: b774dc4fca543225d8b5e8c1637eb413c4363b2e613e95222776f792a8cec0e0  # yamllint disable-line rule:line-length
+  block:
+    - name: Ensure opt folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/opt/java"
+        mode: "755"
+
+    - name: Download Lombok jar
+      ansible.builtin.get_url:
+        url: "https://projectlombok.org/downloads/{{ lombok_archive_name }}.jar"  # yamllint disable-line rule:line-length
+        checksum: "sha256:{{ lombok_sha256 }}"
+        dest: "{{ ansible_user_dir }}/opt/java/lombok.jar"
+        mode: "755"

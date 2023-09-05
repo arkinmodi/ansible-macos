@@ -3,6 +3,8 @@
   community.general.homebrew:
     state: present
     name:
+      - lua-language-server
+
       # Build deps
       - ccache
       - cmake
