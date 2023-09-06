@@ -3,8 +3,15 @@
   when: ansible_machine == 'arm64'
   vars:
     go_version: 1.21.0
-    go_archive_name: "go{{ go_version }}.darwin-arm64"
     go_sha256: 3aca44de55c5e098de2f406e98aba328898b05d509a2e2a356416faacf2c4566  # yamllint disable-line rule:line-length
+    go_archive_name: "go{{ go_version }}.darwin-arm64"
+    go_opt_dir: "{{ ansible_user_dir }}/opt/go-{{ go_version }}"  # yamllint disable-line rule:line-length
+
+    go_packages:
+      - package_name: golang.org/x/tools/gopls
+        binary_name: gopls
+  environment:
+    GOPATH: "{{ go_opt_dir }}"
   block:
     - name: Download Go tar
       ansible.builtin.get_url:
@@ -17,15 +24,15 @@
     - name: Ensure opt folder
       ansible.builtin.file:
         state: directory
-        path: "{{ ansible_user_dir }}/opt/{{ go_archive_name }}"
+        path: "{{ go_opt_dir }}/{{ go_archive_name }}"
         mode: "755"
 
     - name: Unarchive Go tar
       ansible.builtin.unarchive:
         src: "/tmp/{{ go_archive_name }}.tar.gz"
-        dest: "{{ ansible_user_dir }}/opt/{{ go_archive_name }}"
+        dest: "{{ go_opt_dir }}/{{ go_archive_name }}"
         remote_src: true
-        creates: "{{ ansible_user_dir }}/opt/{{ go_archive_name }}/go"
+        creates: "{{ go_opt_dir }}/{{ go_archive_name }}/go/bin/go"
         mode: "755"
 
     - name: Ensure bin folder
@@ -40,12 +47,26 @@
         src: "{{ item }}"
         dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
       with_fileglob:
-        - "{{ ansible_user_dir }}/opt/{{ go_archive_name }}/go/bin/*"
+        - "{{ go_opt_dir }}/{{ go_archive_name }}/go/bin/*"
+
+    - name: Install Go Packages
+      ansible.builtin.command:
+        cmd: "go install {{ item.package_name }}@latest"
+      register: result
+      changed_when: result.stderr != ""
+      loop: "{{ go_packages }}"
+
+    - name: Link Go Package Binaries
+      ansible.builtin.file:
+        state: link
+        src: "{{ go_opt_dir }}/bin/{{ item.binary_name }}"
+        dest: "{{ ansible_user_dir }}/bin/{{ item.binary_name }}"
+      loop: "{{ go_packages }}"
 
     - name: Find Old Go
       ansible.builtin.find:
         paths: "{{ ansible_user_dir }}/opt"
-        pattern: "go*"
+        pattern: "go-*"
         file_type: directory
       register: old_gos
 
@@ -55,6 +76,6 @@
         path: "{{ item.path }}"
       vars:
         paths_to_keep:
-          - "{{ ansible_user_dir }}/opt/{{ go_archive_name }}"
+          - "{{ go_opt_dir }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_gos.files }}"
