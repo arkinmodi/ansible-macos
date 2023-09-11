@@ -10,6 +10,8 @@
     go_packages:
       - package_name: golang.org/x/tools/gopls
         binary_name: gopls
+      - package_name: github.com/go-task/task/v3/cmd/task
+        binary_name: task
   environment:
     GOPATH: "{{ go_opt_dir }}"
   block:

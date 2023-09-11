@@ -12,7 +12,6 @@
       - clang-format
       - fzf
       - git
-      - go-task
       - jq
       - parallel
       - tmux

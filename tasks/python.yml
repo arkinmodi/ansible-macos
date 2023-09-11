@@ -32,7 +32,7 @@
           /private/tmp/virtualenv.pyz
           -p /usr/bin/python3
           "{{ target_venv }}"
-        creates: "{{ target_venv }}/bin/python"
+        creates: "{{ target_venv }}/bin/python3"
 
     - name: Install Python Packages
       ansible.builtin.pip:
