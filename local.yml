@@ -15,29 +15,49 @@
   tasks:
     - name: Homebrew
       ansible.builtin.import_tasks: tasks/homebrew.yml
+      tags:
+        - homebrew
+        - brew
     - name: Dotfiles
       ansible.builtin.import_tasks: tasks/dotfiles.yml
+      tags: dotfiles
     - name: MacOS
       ansible.builtin.import_tasks: tasks/macos.yml
+      tags: macos
     - name: Tmux
       ansible.builtin.import_tasks: tasks/tmux.yml
+      tags:
+        - tmux
+        - dotfiles
     - name: Python 3
       ansible.builtin.import_tasks: tasks/python.yml
+      tags: python
     - name: Node
       ansible.builtin.import_tasks: tasks/node.yml
+      tags:
+        - node
+        - npm
     - name: Java
       ansible.builtin.import_tasks: tasks/java.yml
+      tags: java
     - name: Go
       ansible.builtin.import_tasks: tasks/go.yml
+      tags: go
     - name: Rust
       ansible.builtin.import_tasks: tasks/rust.yml
+      tags: rust
     - name: Podman
       ansible.builtin.import_tasks: tasks/podman.yml
+      tags: podman
     - name: Terraform
       ansible.builtin.import_tasks: tasks/terraform.yml
+      tags: terraform
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
+      tags: neovim
     - name: AWS CLI
       ansible.builtin.import_tasks: tasks/awscli.yml
+      tags: aws
     - name: Ansible
       ansible.builtin.import_tasks: tasks/ansible.yml
+      tags: ansible
