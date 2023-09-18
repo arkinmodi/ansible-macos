@@ -7,7 +7,6 @@
     state: present
     name:
       - lua-language-server
-      - terraform-ls
 
       # Build deps
       - ccache

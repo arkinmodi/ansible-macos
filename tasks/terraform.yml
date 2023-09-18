@@ -5,13 +5,14 @@
 - name: Install Terraform
   when: ansible_machine == 'arm64'
   vars:
-    terraform_version: 1.4.6
-    terraform_archive_name: terraform_1.4.6_darwin_arm64
+    terraform_version: 1.5.7
+    terraform_sha256: db7c33eb1a446b73a443e2c55b532845f7b70cd56100bec4c96f15cfab5f50cb  # yamllint disable-line rule:line-length
+    terraform_archive_name: "terraform_{{ terraform_version }}_darwin_arm64"
   block:
     - name: Download Terraform zip
       ansible.builtin.get_url:
         url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_archive_name }}.zip"  # yamllint disable-line rule:line-length
-        checksum: sha256:30a2f87298ff9f299452119bd14afaa8d5b000c572f62fa64baf432e35d9dec1  # yamllint disable-line rule:line-length
+        checksum: "sha256:{{ terraform_sha256 }}"
         dest: "/tmp/{{ terraform_archive_name }}.zip"
         mode: "755"
 
@@ -58,3 +59,9 @@
           - "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_terraform.files }}"
+
+- name: Install Terraform Language Server
+  community.general.homebrew:
+    state: present
+    name:
+      - terraform-ls
