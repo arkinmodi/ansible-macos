@@ -10,7 +10,6 @@
   community.general.homebrew:
     state: present
     name:
-      - bat
       - bitwarden-cli
       - clang-format
       - fzf
