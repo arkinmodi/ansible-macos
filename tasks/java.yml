@@ -32,12 +32,6 @@
         creates: "{{ ansible_user_dir }}/opt/java/{{ jdk_archive_name }}/{{ jdk_version }}"  # yamllint disable-line rule:line-length
         mode: "755"
 
-    - name: Ensure bin folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ ansible_user_dir }}/bin"
-        mode: "755"
-
     - name: Link JDK Binaries
       ansible.builtin.file:
         state: link
@@ -89,12 +83,6 @@
         dest: "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}"
         remote_src: true
         creates: "{{ ansible_user_dir }}/opt/java/{{ jdtls_archive_name }}/{{ jdtls_version }}"  # yamllint disable-line rule:line-length
-        mode: "755"
-
-    - name: Ensure bin folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ ansible_user_dir }}/bin"
         mode: "755"
 
     - name: Link Eclipse JDT Language Server Binaries

@@ -1,0 +1,11 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Ensure Workspace Folders
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item }}"
+    mode: "755"
+  loop:
+    - "{{ ansible_user_dir }}/code/sandbox"

@@ -54,12 +54,6 @@
         src: "{{ dotfiles_dir }}/tmux/.config/tmux"
         dest: "{{ ansible_user_dir }}/.config/tmux"
 
-    - name: Ensure bin folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ ansible_user_dir }}/bin"
-        mode: "755"
-
     - name: Link User Scripts
       ansible.builtin.file:
         state: link

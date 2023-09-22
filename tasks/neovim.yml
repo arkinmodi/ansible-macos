@@ -6,6 +6,7 @@
   community.general.homebrew:
     state: present
     name:
+      - clang-format
       - lua-language-server
 
       # Build deps
@@ -14,12 +15,6 @@
       - curl
       - gettext
       - ninja
-
-- name: Ensure opt folder
-  ansible.builtin.file:
-    state: directory
-    path: "{{ ansible_user_dir }}/opt/neovim"
-    mode: "755"
 
 - name: Clone Neovim Repo
   ansible.builtin.git:

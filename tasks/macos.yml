@@ -27,9 +27,3 @@
           {{ [background_filepath] }}
       when: current_background_list != target_background_list
       changed_when: current_background_list != target_background_list
-
-- name: Ensure code & sandbox folders
-  ansible.builtin.file:
-    state: directory
-    path: "{{ ansible_user_dir }}/code/sandbox"
-    mode: "755"

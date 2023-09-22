@@ -10,10 +10,22 @@
       ansible.builtin.fail:
         msg: This playbook is only for macOS.
       when: ansible_os_family != 'Darwin'
+      tags: always
 
     - name: Update Homebrew
       community.general.homebrew:
         update_homebrew: true
+      tags: always
+
+    - name: Ensure Common Folders
+      ansible.builtin.file:
+        state: directory
+        path: "{{ item }}"
+        mode: "755"
+      loop:
+        - "{{ ansible_user_dir }}/bin"
+        - "{{ ansible_user_dir }}/opt"
+      tags: always
 
   tasks:
     - name: Homebrew
@@ -27,6 +39,9 @@
     - name: MacOS
       ansible.builtin.import_tasks: tasks/macos.yml
       tags: macos
+    - name: Home Directory
+      ansible.builtin.import_tasks: tasks/home.yml
+      tags: home
     - name: Tmux
       ansible.builtin.import_tasks: tasks/tmux.yml
       tags:

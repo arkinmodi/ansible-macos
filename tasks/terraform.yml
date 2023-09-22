@@ -31,12 +31,6 @@
           "{{ ansible_user_dir }}/opt/{{ terraform_archive_name }}/terraform"
         mode: "755"
 
-    - name: Ensure bin folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ ansible_user_dir }}/bin"
-        mode: "755"
-
     - name: Link Terraform Binary
       ansible.builtin.file:
         state: link
