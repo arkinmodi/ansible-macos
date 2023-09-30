@@ -10,6 +10,7 @@
       - awshelp
       - bwenv
       - flake8
+      - pre-commit
       - podman-compose
       - pynvim
       - tldr
