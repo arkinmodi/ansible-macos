@@ -15,7 +15,6 @@
       - git
       - jq
       - parallel
-      - tmux
       - tree
       - watch
       - wget

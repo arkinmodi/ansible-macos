@@ -5,8 +5,7 @@
 - name: Install tmux
   community.general.homebrew:
     state: present
-    name:
-      - tmux
+    name: tmux
 
 # macOS ncurses does not ship the terminfo description for tmux
 - name: Check for tmux terminfo
@@ -25,8 +24,7 @@
     - name: Install newer ncurses
       community.general.homebrew:
         state: present
-        name:
-          - ncurses
+        name: ncurses
 
     - name: Get ncurses install location
       ansible.builtin.command: brew --prefix ncurses

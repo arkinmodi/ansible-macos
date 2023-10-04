@@ -5,8 +5,7 @@
 - name: Install Podman
   community.general.homebrew:
     state: present
-    name:
-      - podman
+    name: podman
 
 - name: Create Podman Machine
   ansible.builtin.command: podman machine init

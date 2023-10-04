@@ -12,7 +12,7 @@
   when: ansible_machine == 'arm64'
   vars:
     # https://aws.amazon.com/corretto
-    # https://github.com/corretto/corretto-21/releases
+    # https://github.com/corretto/corretto-17/releases
     jdk_major_version: "17"
     jdk_version: "{{ jdk_major_version }}.0.8.8.1"
     jdk_sha256: 08833433222ddb241a448eab92e0926d96287986f85dd5a6a065ae724e1bce43

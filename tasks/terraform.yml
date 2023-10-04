@@ -57,5 +57,4 @@
 - name: Install Terraform Language Server
   community.general.homebrew:
     state: present
-    name:
-      - terraform-ls
+    name: terraform-ls
