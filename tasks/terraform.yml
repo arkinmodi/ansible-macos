@@ -5,8 +5,8 @@
 - name: Install Terraform
   when: ansible_machine == 'arm64'
   vars:
-    terraform_version: 1.5.7
-    terraform_sha256: db7c33eb1a446b73a443e2c55b532845f7b70cd56100bec4c96f15cfab5f50cb  # yamllint disable-line rule:line-length
+    terraform_version: 1.6.0
+    terraform_sha256: aaf3f6639c9fd3864059955a36ccdadd7b54bab681fbe760525548a53cc0c7ec  # yamllint disable-line rule:line-length
     terraform_archive_name: "terraform_{{ terraform_version }}_darwin_arm64"
   block:
     - name: Download Terraform zip
