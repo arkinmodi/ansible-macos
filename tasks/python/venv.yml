@@ -4,14 +4,14 @@
 ---
 - name: Setup virtualenv
   vars:
-    target_venv: "{{ ansible_user_dir }}/opt/venv"
+    target_venv: "{{ python_dir }}/venv"
     python_packages:
       - autopep8
       - awshelp
       - bwenv
       - flake8
-      - pre-commit
       - podman-compose
+      - pre-commit
       - tldr
       - tox
       - twine
@@ -19,22 +19,13 @@
       - yamllint
       - youtube-dl
   block:
-    - name: Download virtualenv
-      ansible.builtin.get_url:
-        url: https://bootstrap.pypa.io/virtualenv.pyz
-        dest: /tmp/virtualenv.pyz
-        mode: "755"
-
-    # virutalenv.pyz path cannot contain symlinks
-    # In macOS, /tmp is a symlink to /private/tmp
-    # See https://github.com/pypa/virtualenv/issues/1949
     - name: Create virtualenv
       ansible.builtin.command:
-        cmd: >
-          "{{ ansible_python.executable }}"
-          /private/tmp/virtualenv.pyz
-          -p /usr/bin/python3
-          "{{ target_venv }}"
+        argv:
+          - "{{ ansible_python.executable }}"
+          - "{{ virtualenv_pyz }}"
+          - "-p={{ cpython_exe }}"
+          - "{{ target_venv }}"
         creates: "{{ target_venv }}/bin/python3"
 
     - name: Install Python Packages

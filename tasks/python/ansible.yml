@@ -4,28 +4,23 @@
 ---
 - name: Setup PyPI Ansible
   vars:
-    target_venv: "{{ ansible_user_dir }}/opt/ansible-venv"
+    target_venv: "{{ python_dir }}/ansible-venv"
     python_packages:
       - ansible
       - ansible-lint
-  block:
-    - name: Download virtualenv
-      ansible.builtin.get_url:
-        url: https://bootstrap.pypa.io/virtualenv.pyz
-        dest: /tmp/virtualenv.pyz
-        mode: "755"
 
-    # virutalenv.pyz path cannot contain symlinks
-    # In macOS, /tmp is a symlink to /private/tmp
-    # See https://github.com/pypa/virtualenv/issues/1949
+      # Ansible is not python 3.12 ready
+      # Ansible 2.16 should fix this
+      - setuptools
+  block:
     - name: Create Ansible virtualenv
       ansible.builtin.command:
-        cmd: >
-          "{{ ansible_python.executable }}"
-          /private/tmp/virtualenv.pyz
-          -p /usr/bin/python3
-          "{{ target_venv }}"
-        creates: "{{ target_venv }}/bin/python"
+        argv:
+          - "{{ ansible_python.executable }}"
+          - "{{ virtualenv_pyz }}"
+          - "-p={{ cpython_exe }}"
+          - "{{ target_venv }}"
+        creates: "{{ target_venv }}/bin/python3"
 
     - name: Install Ansible Packages
       ansible.builtin.pip:

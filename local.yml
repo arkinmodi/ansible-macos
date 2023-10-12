@@ -47,9 +47,6 @@
       tags:
         - tmux
         - dotfiles
-    - name: Python 3
-      ansible.builtin.import_tasks: tasks/python.yml
-      tags: python
     - name: Node
       ansible.builtin.import_tasks: tasks/node.yml
       tags:
@@ -73,9 +70,6 @@
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
       tags: neovim
-    - name: AWS CLI
-      ansible.builtin.import_tasks: tasks/awscli.yml
-      tags: aws
-    - name: Ansible
-      ansible.builtin.import_tasks: tasks/ansible.yml
-      tags: ansible
+    - name: Python 3
+      ansible.builtin.import_tasks: tasks/python/python.yml
+      tags: python

@@ -1,0 +1,58 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Clone CPython Repository
+  ansible.builtin.git:
+    accept_newhostkey: true
+    depth: 1
+    dest: "{{ cpython_dir }}"
+    repo: git@github.com:python/cpython
+    version: "{{ python_version }}"
+  register: clone
+
+- name: Build Python
+  when: clone.before != clone.after
+  block:
+    - name: Install CPython Build Dependencies
+      community.general.homebrew:
+        state: present
+        name:
+          # https://devguide.python.org/getting-started/setup-building/#macos
+          - gdbm
+          - openssl@3.0
+          - pkg-config
+          - tcl-tk
+          - xz
+
+    - name: Get gdbm Install Location
+      ansible.builtin.command: brew --prefix gdbm
+      register: gdbm_location
+      changed_when: false
+
+    - name: Get openssl Install Location
+      ansible.builtin.command: brew --prefix openssl@3.0
+      register: openssl_location
+      changed_when: false
+
+    - name: Clean CPython Repository  # noqa: command-instead-of-module
+      ansible.builtin.command: git clean -ffxd
+      register: clean
+      changed_when: clean.stdout != ""
+
+    - name: Run configure
+      ansible.builtin.command:
+        argv:
+          - "./configure"
+          - --with-pydebug
+          - "--with-openssl={{ openssl_location.stdout }}"
+        chdir: "{{ cpython_dir }}"
+      environment:
+        GDBM_CFLAGS: "-I{{ gdbm_location.stdout }}/include"
+        GDBM_LIBS: "-L{{ gdbm_location.stdout }}/lib -lgdbm"
+      changed_when: true
+
+    - name: Build CPython
+      community.general.make:
+        chdir: "{{ cpython_dir }}"
+        jobs: 2

@@ -1,0 +1,40 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Download virtualenv.pyz
+  ansible.builtin.get_url:
+    url: https://bootstrap.pypa.io/virtualenv.pyz
+    dest: /tmp/virtualenv.pyz
+    mode: "755"
+
+- name: Setup Python
+  vars:
+    python_version: v3.12.0
+    python_dir: "{{ ansible_user_dir }}/opt/python-{{ python_version }}"
+    cpython_dir: "{{ python_dir }}/cpython"
+    cpython_exe: "{{ cpython_dir }}/python.exe"
+
+    # virutalenv.pyz path cannot contain symlinks
+    # In macOS, /tmp is a symlink to /private/tmp
+    # See https://github.com/pypa/virtualenv/issues/1949
+    virtualenv_pyz: "/private/tmp/virtualenv.pyz"
+  block:
+    - name: Ensure opt Folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/opt/python-{{ python_version }}"
+        mode: "755"
+
+    - name: CPython
+      ansible.builtin.import_tasks: tasks/python/cpython.yml
+      tags: cpython
+    - name: Python 3 Virtual Environment
+      ansible.builtin.import_tasks: tasks/python/venv.yml
+      tags: venv
+    - name: AWS CLI
+      ansible.builtin.import_tasks: tasks/python/awscli.yml
+      tags: aws
+    - name: Ansible
+      ansible.builtin.import_tasks: tasks/python/ansible.yml
+      tags: ansible
