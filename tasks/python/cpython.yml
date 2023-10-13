@@ -8,7 +8,7 @@
     depth: 1
     dest: "{{ cpython_dir }}"
     repo: git@github.com:python/cpython
-    version: "{{ python_version }}"
+    version: "{{ cpython_tag }}"
   register: clone
 
 - name: Build Python
@@ -43,7 +43,7 @@
     - name: Run configure
       ansible.builtin.command:
         argv:
-          - "./configure"
+          - ./configure
           - --with-pydebug
           - "--with-openssl={{ openssl_location.stdout }}"
         chdir: "{{ cpython_dir }}"
