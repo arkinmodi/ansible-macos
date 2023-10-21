@@ -4,7 +4,7 @@
 ---
 - name: Setup AWS CLI
   vars:
-    target_venv: "{{ python_dir }}/awscli-venv"
+    target_venv: "{{ python_opt_dir }}/awscli-venv"
     python_packages:
       - awscli
       - aws-sam-cli
@@ -14,7 +14,7 @@
         argv:
           - "{{ ansible_python.executable }}"
           - "{{ virtualenv_pyz }}"
-          - "-p={{ cpython_exe }}"
+          - "-p={{ python_exe }}"
           - "{{ target_venv }}"
         creates: "{{ target_venv }}/bin/python3"
 

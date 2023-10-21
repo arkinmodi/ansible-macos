@@ -28,37 +28,37 @@
       - package_name: stylua
         binary_name: stylua
   environment:
-    CARGO_HOME: "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo"
-    RUSTUP_HOME: "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.rustup"
+    CARGO_HOME: "{{ common_opt }}/{{ rust_archive_name }}/.cargo"
+    RUSTUP_HOME: "{{ common_opt }}/{{ rust_archive_name }}/.rustup"
   block:
     - name: Download rustup-init
       ansible.builtin.get_url:
         url: "https://static.rust-lang.org/rustup/archive/{{ rustup_version }}/{{ rustup_arch }}/rustup-init"  # yamllint disable-line rule:line-length
         checksum: "sha256:{{ rustup_sha256 }}"
-        dest: /tmp/rustup-init
+        dest: "{{ tempdir.path }}/rustup-init"
         mode: "755"
 
     - name: Ensure opt folder
       ansible.builtin.file:
         state: directory
-        path: "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}"
+        path: "{{ common_opt }}/{{ rust_archive_name }}"
         mode: "755"
 
     - name: Run rustup-init
       ansible.builtin.command:
         argv:
-          - /tmp/rustup-init
+          - "{{ tempdir.path }}/rustup-init"
           - "--default-host={{ rustup_arch }}"
           - "--default-toolchain={{ rust_version }}"
           - --no-modify-path
           - --profile=default
           - -y
-        creates: "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.rustup/toolchains/{{ rust_version }}-{{ rustup_arch }}/bin/rustc"  # yamllint disable-line rule:line-length
+        creates: "{{ common_opt }}/{{ rust_archive_name }}/.rustup/toolchains/{{ rust_version }}-{{ rustup_arch }}/bin/rustc"  # yamllint disable-line rule:line-length
 
     - name: Install Rust Components
       ansible.builtin.command:
         argv:
-          - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/rustup"  # yamllint disable-line rule:line-length
+          - "{{ common_opt }}/{{ rust_archive_name }}/.cargo/bin/rustup"  # yamllint disable-line rule:line-length
           - component
           - add
           - "{{ item }}"
@@ -70,10 +70,10 @@
       ansible.builtin.file:
         state: link
         src: "{{ item }}"
-        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+        dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
-        - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/cargo*"
-        - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/rust*"
+        - "{{ common_opt }}/{{ rust_archive_name }}/.cargo/bin/cargo*"
+        - "{{ common_opt }}/{{ rust_archive_name }}/.cargo/bin/rust*"
 
     - name: Install Rust Packages
       community.general.cargo:
@@ -83,13 +83,13 @@
     - name: Link Rust Package Binaries
       ansible.builtin.file:
         state: link
-        src: "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}/.cargo/bin/{{ item.binary_name }}"  # yamllint disable-line rule:line-length
-        dest: "{{ ansible_user_dir }}/bin/{{ item.binary_name }}"
+        src: "{{ common_opt }}/{{ rust_archive_name }}/.cargo/bin/{{ item.binary_name }}"  # yamllint disable-line rule:line-length
+        dest: "{{ common_bin }}/{{ item.binary_name }}"
       loop: "{{ rust_packages }}"
 
     - name: Find Old Rust
       ansible.builtin.find:
-        paths: "{{ ansible_user_dir }}/opt"
+        paths: "{{ common_opt }}"
         pattern: "rust-*"
         file_type: directory
       register: old_rust
@@ -100,6 +100,6 @@
         path: "{{ item.path }}"
       vars:
         paths_to_keep:
-          - "{{ ansible_user_dir }}/opt/{{ rust_archive_name }}"
+          - "{{ common_opt }}/{{ rust_archive_name }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_rust.files }}"

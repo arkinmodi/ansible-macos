@@ -8,7 +8,7 @@
     go_version: 1.21.0
     go_sha256: 3aca44de55c5e098de2f406e98aba328898b05d509a2e2a356416faacf2c4566  # yamllint disable-line rule:line-length
     go_archive_name: "go{{ go_version }}.darwin-arm64"
-    go_opt_dir: "{{ ansible_user_dir }}/opt/go-{{ go_version }}"  # yamllint disable-line rule:line-length
+    go_opt_dir: "{{ common_opt }}/go-{{ go_version }}"  # yamllint disable-line rule:line-length
 
     go_packages:
       - package_name: golang.org/x/tools/gopls
@@ -23,7 +23,7 @@
         # https://go.dev/dl/
         url: "https://go.dev/dl/{{ go_archive_name }}.tar.gz"
         checksum: "sha256:{{ go_sha256 }}"
-        dest: "/tmp/{{ go_archive_name }}.tar.gz"
+        dest: "{{ tempdir.path }}/{{ go_archive_name }}.tar.gz"
         mode: "755"
 
     - name: Ensure opt folder
@@ -34,7 +34,7 @@
 
     - name: Unarchive Go tar
       ansible.builtin.unarchive:
-        src: "/tmp/{{ go_archive_name }}.tar.gz"
+        src: "{{ tempdir.path }}/{{ go_archive_name }}.tar.gz"
         dest: "{{ go_opt_dir }}/{{ go_archive_name }}"
         remote_src: true
         creates: "{{ go_opt_dir }}/{{ go_archive_name }}/go/bin/go"
@@ -44,7 +44,7 @@
       ansible.builtin.file:
         state: link
         src: "{{ item }}"
-        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+        dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
         - "{{ go_opt_dir }}/{{ go_archive_name }}/go/bin/*"
 
@@ -59,12 +59,12 @@
       ansible.builtin.file:
         state: link
         src: "{{ go_opt_dir }}/bin/{{ item.binary_name }}"
-        dest: "{{ ansible_user_dir }}/bin/{{ item.binary_name }}"
+        dest: "{{ common_bin }}/{{ item.binary_name }}"
       loop: "{{ go_packages }}"
 
     - name: Find Old Go
       ansible.builtin.find:
-        paths: "{{ ansible_user_dir }}/opt"
+        paths: "{{ common_opt }}"
         pattern: "go-*"
         file_type: directory
       register: old_gos

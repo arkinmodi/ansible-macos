@@ -7,7 +7,7 @@
   vars:
     node_version: v18.16.0
     node_archive_name: node-v18.16.0-darwin-arm64
-    node_opt_dir: "{{ ansible_user_dir }}/opt/{{ node_archive_name }}"
+    node_opt_dir: "{{ common_opt }}/{{ node_archive_name }}"
 
     npm_packages:
       - "@astrojs/language-server"
@@ -22,13 +22,13 @@
       ansible.builtin.get_url:
         url: "https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
         checksum: sha256:82c7bb4869419ce7338669e6739a786dfc7e72f276ffbed663f85ffc905dcdb4  # yamllint disable-line rule:line-length
-        dest: "/tmp/{{ node_archive_name }}.tar.gz"
+        dest: "{{ tempdir.path }}/{{ node_archive_name }}.tar.gz"
         mode: "755"
 
     - name: Unarchive Nodejs tar
       ansible.builtin.unarchive:
-        src: "/tmp/{{ node_archive_name }}.tar.gz"
-        dest: "{{ ansible_user_dir }}/opt"
+        src: "{{ tempdir.path }}/{{ node_archive_name }}.tar.gz"
+        dest: "{{ common_opt }}"
         remote_src: true
         creates: "{{ node_opt_dir }}"
         mode: "755"
@@ -46,13 +46,13 @@
       ansible.builtin.file:
         state: link
         src: "{{ item }}"
-        dest: "{{ ansible_user_dir }}/bin/{{ item | basename }}"
+        dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
         - "{{ node_opt_dir }}/bin/*"
 
     - name: Find Old Nodejs
       ansible.builtin.find:
-        paths: "{{ ansible_user_dir }}/opt"
+        paths: "{{ common_opt }}"
         pattern: "node-v*"
         file_type: directory
       register: old_node

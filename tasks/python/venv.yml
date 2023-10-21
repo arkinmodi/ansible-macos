@@ -4,7 +4,7 @@
 ---
 - name: Setup virtualenv
   vars:
-    target_venv: "{{ python_dir }}/venv"
+    target_venv: "{{ python_opt_dir }}/venv"
     python_packages:
       - autopep8
       - awshelp
@@ -24,7 +24,7 @@
         argv:
           - "{{ ansible_python.executable }}"
           - "{{ virtualenv_pyz }}"
-          - "-p={{ cpython_exe }}"
+          - "-p={{ python_exe }}"
           - "{{ target_venv }}"
         creates: "{{ target_venv }}/bin/python3"
 

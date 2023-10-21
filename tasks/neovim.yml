@@ -20,7 +20,7 @@
   ansible.builtin.git:
     accept_newhostkey: true
     depth: 1
-    dest: "{{ ansible_user_dir }}/opt/neovim/repo"
+    dest: "{{ common_opt }}/neovim/repo"
     repo: git@github.com:neovim/neovim
     version: stable
   register: clone
@@ -36,16 +36,16 @@
     - name: Build & Install Neovim
       community.general.make:
         target: install
-        chdir: "{{ ansible_user_dir }}/opt/neovim/repo"
+        chdir: "{{ common_opt }}/neovim/repo"
         params:
           CMAKE_BUILD_TYPE: Release
-          CMAKE_INSTALL_PREFIX: "{{ ansible_user_dir }}/opt/neovim/build"
+          CMAKE_INSTALL_PREFIX: "{{ common_opt }}/neovim/build"
 
 - name: Link Neovim
   ansible.builtin.file:
     state: link
-    src: "{{ ansible_user_dir }}/opt/neovim/build/bin/nvim"
-    dest: "{{ ansible_user_dir }}/bin/nvim"
+    src: "{{ common_opt }}/neovim/build/bin/nvim"
+    dest: "{{ common_bin }}/nvim"
 
 - name: Install Neovim Plugins
   ansible.builtin.command: nvim --headless '+Lazy! restore' +qa

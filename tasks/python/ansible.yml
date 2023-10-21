@@ -4,7 +4,7 @@
 ---
 - name: Setup PyPI Ansible
   vars:
-    target_venv: "{{ python_dir }}/ansible-venv"
+    target_venv: "{{ python_opt_dir }}/ansible-venv"
     python_packages:
       - ansible
       - ansible-lint
@@ -18,7 +18,7 @@
         argv:
           - "{{ ansible_python.executable }}"
           - "{{ virtualenv_pyz }}"
-          - "-p={{ cpython_exe }}"
+          - "-p={{ python_exe }}"
           - "{{ target_venv }}"
         creates: "{{ target_venv }}/bin/python3"
 

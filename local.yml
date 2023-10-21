@@ -23,9 +23,19 @@
         path: "{{ item }}"
         mode: "755"
       loop:
-        - "{{ ansible_user_dir }}/bin"
-        - "{{ ansible_user_dir }}/opt"
+        - "{{ common_bin }}"
+        - "{{ common_opt }}"
       tags: always
+
+    - name: Create Common Temporary Directory
+      ansible.builtin.tempfile:
+        state: directory
+      register: tempdir
+      tags: always
+
+  vars:
+    common_bin: "{{ ansible_user_dir }}/bin"
+    common_opt: "{{ ansible_user_dir }}/opt"
 
   tasks:
     - name: Homebrew

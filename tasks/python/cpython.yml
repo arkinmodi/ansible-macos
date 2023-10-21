@@ -6,7 +6,7 @@
   ansible.builtin.git:
     accept_newhostkey: true
     depth: 1
-    dest: "{{ cpython_dir }}"
+    dest: "{{ cpython_opt_dir }}"
     repo: git@github.com:python/cpython
     version: "{{ cpython_tag }}"
   register: clone
@@ -46,7 +46,7 @@
           - ./configure
           - --with-pydebug
           - "--with-openssl={{ openssl_location.stdout }}"
-        chdir: "{{ cpython_dir }}"
+        chdir: "{{ cpython_opt_dir }}"
       environment:
         GDBM_CFLAGS: "-I{{ gdbm_location.stdout }}/include"
         GDBM_LIBS: "-L{{ gdbm_location.stdout }}/lib -lgdbm"
@@ -54,5 +54,5 @@
 
     - name: Build CPython
       community.general.make:
-        chdir: "{{ cpython_dir }}"
+        chdir: "{{ cpython_opt_dir }}"
         jobs: 2
