@@ -2,57 +2,29 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
 # yamllint enable rule:line-length
 ---
-- name: Clone CPython Repository
-  ansible.builtin.git:
-    accept_newhostkey: true
-    depth: 1
-    dest: "{{ cpython_opt_dir }}"
-    repo: git@github.com:python/cpython
-    version: "{{ cpython_tag }}"
-  register: clone
-
-- name: Build Python
-  when: clone.before != clone.after
+- name: Setup CPython
+  vars:
+    release_tag: "20231002"
+    cpython_archive_name: "cpython-{{ cpython_version }}+{{ release_tag }}-aarch64-apple-darwin-pgo+lto-full"  # yamllint disable-line rule:line-length
+    cpython_sha256: 25fc8cd41e975d18d13bcc8f8beffa096ff8a0b86c4a737e1c6617900092c966  # yamllint disable-line rule:line-length
   block:
-    - name: Install CPython Build Dependencies
-      community.general.homebrew:
-        state: present
-        name:
-          # https://devguide.python.org/getting-started/setup-building/#macos
-          - gdbm
-          - openssl@3.0
-          - pkg-config
-          - tcl-tk
-          - xz
+    - name: Download CPython
+      ansible.builtin.get_url:
+        url: "https://github.com/indygreg/python-build-standalone/releases/download/{{ release_tag }}/{{ cpython_archive_name }}.tar.zst"  # yamllint disable-line rule:line-length
+        checksum: "sha256:{{ cpython_sha256 }}"
+        dest: "{{ tempdir.path }}/{{ cpython_archive_name }}.tar.zst"
+        mode: "755"
 
-    - name: Get gdbm Install Location
-      ansible.builtin.command: brew --prefix gdbm
-      register: gdbm_location
-      changed_when: false
+    - name: Ensure CPython opt Directory
+      ansible.builtin.file:
+        state: directory
+        path: "{{ cpython_opt_dir }}"
+        mode: "755"
 
-    - name: Get openssl Install Location
-      ansible.builtin.command: brew --prefix openssl@3.0
-      register: openssl_location
-      changed_when: false
-
-    - name: Clean CPython Repository  # noqa: command-instead-of-module
-      ansible.builtin.command: git clean -ffxd
-      register: clean
-      changed_when: clean.stdout != ""
-
-    - name: Run configure
-      ansible.builtin.command:
-        argv:
-          - ./configure
-          - --with-pydebug
-          - "--with-openssl={{ openssl_location.stdout }}"
-        chdir: "{{ cpython_opt_dir }}"
-      environment:
-        GDBM_CFLAGS: "-I{{ gdbm_location.stdout }}/include"
-        GDBM_LIBS: "-L{{ gdbm_location.stdout }}/lib -lgdbm"
-      changed_when: true
-
-    - name: Build CPython
-      community.general.make:
-        chdir: "{{ cpython_opt_dir }}"
-        jobs: 2
+    - name: Unarchive CPython tar
+      ansible.builtin.unarchive:
+        src: "{{ tempdir.path }}/{{ cpython_archive_name }}.tar.zst"
+        dest: "{{ cpython_opt_dir }}"
+        remote_src: true
+        creates: "{{ python_exe }}"
+        mode: "755"

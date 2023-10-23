@@ -3,11 +3,12 @@
 # yamllint enable rule:line-length
 ---
 - name: Setup Python
+  when: ansible_machine == 'arm64'
   vars:
-    cpython_tag: v3.12.0
-    python_opt_dir: "{{ common_opt }}/python-{{ cpython_tag }}"
+    cpython_version: 3.12.0
+    python_opt_dir: "{{ common_opt }}/python-{{ cpython_version }}"
     cpython_opt_dir: "{{ python_opt_dir }}/cpython"
-    python_exe: "{{ cpython_opt_dir }}/python.exe"
+    python_exe: "{{ cpython_opt_dir }}/python/install/bin/python3"
     virtualenv_pyz: "{{ tempdir.path }}/virtualenv.pyz"
   block:
     - name: Download virtualenv.pyz
@@ -24,7 +25,7 @@
     - name: Ensure opt Folder
       ansible.builtin.file:
         state: directory
-        path: "{{ common_opt }}/python-{{ cpython_tag }}"
+        path: "{{ python_opt_dir }}"
         mode: "755"
       tags:
         - ansible
