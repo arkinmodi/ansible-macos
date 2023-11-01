@@ -8,11 +8,12 @@
     node_version: v20.9.0
     node_archive_name: "node-{{ node_version }}-darwin-arm64"
     node_opt_dir: "{{ common_opt }}/{{ node_archive_name }}"
-    node_sha256: 31d2d46ae8d8a3982f54e2ff1e60c2e4a8e80bf78a3e8b46dcaac95ac5d7ce6a  # yamllint disable-line rule:line-length
+    node_sha256: 2e0fb297d802ae6fd045ee37cd45bd4e489eac11dec89dcd5223fc48e02a1937  # yamllint disable-line rule:line-length
 
     npm_packages:
       - "@astrojs/language-server"
       - "@tailwindcss/language-server"
+      - markdown-toc
       - prettier
       - typescript
       - typescript-language-server
@@ -21,14 +22,14 @@
   block:
     - name: Download Nodejs tar
       ansible.builtin.get_url:
-        url: "https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
+        url: "https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.xz"  # yamllint disable-line rule:line-length
         checksum: "sha256:{{ node_sha256 }}"
-        dest: "{{ tempdir.path }}/{{ node_archive_name }}.tar.gz"
+        dest: "{{ tempdir.path }}/{{ node_archive_name }}.tar.xz"
         mode: "755"
 
     - name: Unarchive Nodejs tar
       ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ node_archive_name }}.tar.gz"
+        src: "{{ tempdir.path }}/{{ node_archive_name }}.tar.xz"
         dest: "{{ common_opt }}"
         remote_src: true
         creates: "{{ node_opt_dir }}"
