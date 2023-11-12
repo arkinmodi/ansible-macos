@@ -7,7 +7,7 @@
     state: present
     name: tmux
 
-# macOS ncurses does not ship the terminfo description for tmux
+# macOS<14 ncurses does not ship the terminfo description for tmux
 - name: Check for tmux terminfo
   ansible.builtin.command: infocmp tmux-256color
   register: infocmp_tmux

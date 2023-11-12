@@ -17,7 +17,7 @@
       - twine
       - virtualenv
       - yamllint
-      - youtube-dl
+      - yt-dlp
   block:
     - name: Create virtualenv
       ansible.builtin.command:
