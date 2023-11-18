@@ -62,6 +62,18 @@
         - tmux
         - dotfiles
 
+    - name: Yabai
+      ansible.builtin.import_tasks: tasks/yabai.yml
+      tags:
+        - yabai
+        - dotfiles
+
+    - name: Skhd
+      ansible.builtin.import_tasks: tasks/skhd.yml
+      tags:
+        - skhd
+        - dotfiles
+
     - name: Node
       ansible.builtin.import_tasks: tasks/node.yml
       tags:

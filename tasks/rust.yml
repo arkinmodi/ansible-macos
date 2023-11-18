@@ -21,6 +21,8 @@
         binary_name: bat
       - package_name: fd-find
         binary_name: fd
+      - package_name: hyperfine
+        binary_name: hyperfine
       - package_name: onefetch
         binary_name: onefetch
       - package_name: ripgrep

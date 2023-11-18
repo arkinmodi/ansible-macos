@@ -61,3 +61,15 @@
         dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
         - "{{ dotfiles_dir }}/scripts/*"
+
+    - name: Link yabai Configurations
+      ansible.builtin.file:
+        state: link
+        src: "{{ dotfiles_dir }}/yabai/.config/yabai"
+        dest: "{{ ansible_user_dir }}/.config/yabai"
+
+    - name: Link skhd Configurations
+      ansible.builtin.file:
+        state: link
+        src: "{{ dotfiles_dir }}/skhd/.config/skhd"
+        dest: "{{ ansible_user_dir }}/.config/skhd"

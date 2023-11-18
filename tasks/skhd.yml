@@ -1,0 +1,20 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Setup skhd Tap
+  community.general.homebrew_tap:
+    state: present
+    name:
+      - koekeishiya/formulae
+
+- name: Install skhd
+  community.general.homebrew:
+    state: present
+    name: skhd
+
+- name: Install skhd launchd Service File
+  ansible.builtin.command: skhd --install-service
+  register: result
+  changed_when: result.rc == 0
+  failed_when: result.rc != 0 and result.rc != 1

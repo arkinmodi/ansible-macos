@@ -39,12 +39,14 @@
       - 1password-cli
       - alacritty
       - bitwarden
+      - calibre
       - firefox
       - font-jetbrains-mono-nerd-font
       - gimp
       - google-chrome
       - inkscape
       - iterm2
+      - the-unarchiver
       - visual-studio-code
       - vlc
 
