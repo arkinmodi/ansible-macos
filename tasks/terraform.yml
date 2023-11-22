@@ -54,8 +54,3 @@
           - "{{ terraform_opt_dir }}"
       when: item.path not in paths_to_keep
       loop: "{{ old_terraform.files }}"
-
-- name: Install Terraform Language Server
-  community.general.homebrew:
-    state: present
-    name: terraform-ls
