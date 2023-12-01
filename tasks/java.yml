@@ -16,10 +16,10 @@
       when: ansible_machine == 'arm64'
       vars:
         # https://aws.amazon.com/corretto
-        # https://github.com/corretto/corretto-17/releases
-        jdk_major_version: "17"
-        jdk_version: "{{ jdk_major_version }}.0.8.8.1"
-        jdk_sha256: 08833433222ddb241a448eab92e0926d96287986f85dd5a6a065ae724e1bce43  # yamllint disable-line rule:line-length
+        # https://github.com/corretto/corretto-21/releases
+        jdk_major_version: "21"
+        jdk_version: "{{ jdk_major_version }}.0.1.12.1"
+        jdk_sha256: 0c4e08fc4b7c0c887651a97f315d6995eeac38627eb7bca0cb3c698d21af349f  # yamllint disable-line rule:line-length
         jdk_archive_name: "amazon-corretto-{{ jdk_version }}-macosx-aarch64"
         jdk_opt_dir: "{{ java_opt_dir }}/amazon-corretto-{{ jdk_major_version }}.jdk"  # yamllint disable-line rule:line-length
       block:
@@ -68,9 +68,9 @@
     - name: Ensure Eclipse JDT Language Server & Purge Old Versions
       vars:
         # https://download.eclipse.org/jdtls/milestones
-        jdtls_version: 1.27.1
-        jdtls_archive_name: "jdt-language-server-{{ jdtls_version }}-202309140221"  # yamllint disable-line rule:line-length
-        jdtls_sha256: 8866ab98c9557e54e68bde3df8b27fb1e4a0c3a1785a7f8e16ccf267bc5b5ac5  # yamllint disable-line rule:line-length
+        jdtls_version: 1.30.0
+        jdtls_archive_name: "jdt-language-server-{{ jdtls_version }}-202311301503"  # yamllint disable-line rule:line-length
+        jdtls_sha256: 579809f27df5f4e53566217f7273fa25cd45a22d3870c0aafd4f84cdd4c97acd  # yamllint disable-line rule:line-length
         jdtls_opt_dir: "{{ java_opt_dir }}/{{ jdtls_archive_name }}"
       block:
         - name: Download Eclipse JDT Language Server tar
