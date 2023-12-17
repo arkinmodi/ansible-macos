@@ -146,6 +146,7 @@
           ansible.builtin.command:
             cmd: ./mvnw clean install -Dmaven.test.skip=true
             chdir: "{{ java_opt_dir }}/java-debug"
+          changed_when: true
 
     - name: Setup vscode-java-test
       block:
@@ -166,3 +167,4 @@
               npm install
               npm run build-plugin
             chdir: "{{ java_opt_dir }}/vscode-java-test"
+          changed_when: true
