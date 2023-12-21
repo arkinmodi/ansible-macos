@@ -52,12 +52,6 @@
       ansible.builtin.import_tasks: tasks/home.yml
       tags: home
 
-    - name: Tmux
-      ansible.builtin.import_tasks: tasks/tmux.yml
-      tags:
-        - tmux
-        - dotfiles
-
     - name: Yabai
       ansible.builtin.import_tasks: tasks/yabai.yml
       tags:

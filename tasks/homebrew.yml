@@ -16,6 +16,7 @@
       - jq
       - parallel
       - rlwrap
+      - tmux
       - tree
       - watch
       - wget
