@@ -49,7 +49,6 @@
       - inkscape
       - iterm2
       - the-unarchiver
-      - visual-studio-code
       - vlc
 
 - name: Homebrew Autoremove

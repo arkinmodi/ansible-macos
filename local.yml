@@ -90,6 +90,10 @@
       ansible.builtin.import_tasks: tasks/terraform.yml
       tags: terraform
 
+    - name: Visual Studio Code
+      ansible.builtin.import_tasks: tasks/visual-studio-code.yml
+      tags: vscode
+
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
       tags: neovim
