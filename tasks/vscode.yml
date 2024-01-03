@@ -9,17 +9,15 @@
       - visual-studio-code
 
 - name: Install Visual Studio Code Extensions
-  ansible.builtin.command:
-    argv:
-      - code
-      - --install-extension
-      - EditorConfig.EditorConfig
-      - PKief.material-icon-theme
-      - aaron-bond.better-comments
-      - hediet.vscode-drawio
-      - mikestead.dotenv
-      - streetsidesoftware.code-spell-checker
-      - teabyii.ayu
-      - zhuangtongfa.material-theme
+  ansible.builtin.command: code --install-extension "{{ item }}"
+  loop:
+    - EditorConfig.EditorConfig
+    - PKief.material-icon-theme
+    - aaron-bond.better-comments
+    - hediet.vscode-drawio
+    - mikestead.dotenv
+    - streetsidesoftware.code-spell-checker
+    - teabyii.ayu
+    - zhuangtongfa.material-theme
   register: result
   changed_when: "'successfully installed' in result.stdout"
