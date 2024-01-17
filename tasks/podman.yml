@@ -5,7 +5,10 @@
 - name: Install Podman
   community.general.homebrew:
     state: present
-    name: podman
+    name:
+      - docker
+      - docker-compose
+      - podman
 
 - name: Create Podman Machine
   ansible.builtin.command: podman machine init
@@ -14,3 +17,9 @@
   failed_when:
     - machine_init.rc != 0
     - machine_init.rc != 125  # machine already exists
+
+- name: Install Podman System Helper for docker.sock
+  ansible.builtin.command: podman-mac-helper install
+  become: true
+  register: system_helper
+  changed_when: '"helper is already installed" not in system_helper.stderr'
