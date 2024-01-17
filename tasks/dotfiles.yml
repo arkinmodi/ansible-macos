@@ -79,3 +79,10 @@
         state: link
         src: "{{ dotfiles_dir }}/skhd/.config/skhd"
         dest: "{{ ansible_user_dir }}/.config/skhd"
+
+    - name: Clone dotfiles-work Repo  # noqa latest[git]
+      ansible.builtin.git:
+        repo: git@github.com:arkinmodi/dotfiles-work
+        dest: "{{ ansible_user_dir }}/.dotfiles.work"
+        recursive: true
+        accept_newhostkey: true
