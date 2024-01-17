@@ -1,0 +1,22 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Clone java-debug
+  ansible.builtin.git:
+    accept_newhostkey: true
+    depth: 1
+    dest: "{{ java_opt_dir }}/vscode-java-test"
+    force: true
+    repo: git@github.com:microsoft/vscode-java-test
+    version: main
+  register: clone
+
+- name: Build vscode-java-test
+  when: clone.before != clone.after
+  ansible.builtin.command:
+    cmd: |
+      npm install
+      npm run build-plugin
+    chdir: "{{ java_opt_dir }}/vscode-java-test"
+  changed_when: true

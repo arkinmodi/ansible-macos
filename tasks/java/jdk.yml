@@ -1,0 +1,43 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Download and Install Java & Purge Old Java
+  tags: jdk
+  block:
+    - name: Download JDK tar
+      ansible.builtin.get_url:
+        url: "https://corretto.aws/downloads/resources/{{ jdk.jdk_version }}/{{ jdk.jdk_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
+        checksum: "sha256:{{ jdk.jdk_sha256 }}"
+        dest: "{{ tempdir.path }}/{{ jdk.jdk_archive_name }}.tar.gz"
+        mode: "755"
+
+    - name: Purge JDK opt Folder
+      ansible.builtin.file:
+        state: absent
+        path: "{{ jdk.jdk_opt_dir }}"
+
+    - name: Ensure JDK opt Folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ jdk.jdk_opt_dir }}"
+        mode: "755"
+
+    - name: Unarchive JDK tar
+      ansible.builtin.unarchive:
+        src: "{{ tempdir.path }}/{{ jdk.jdk_archive_name }}.tar.gz"
+        dest: "{{ jdk.jdk_opt_dir }}"
+        remote_src: true
+        creates: "{{ jdk.jdk_opt_dir }}/Contents/Home/bin/java"
+        mode: "755"
+        extra_opts:
+          - --strip-components=1
+
+    - name: Link JDK Binaries
+      when: jdk.is_primary_jdk
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ common_bin }}/{{ item | basename }}"
+      with_fileglob:
+        - "{{ jdk.jdk_opt_dir }}/Contents/Home/bin/*"

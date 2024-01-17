@@ -1,0 +1,59 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Setup Java
+  vars:
+    java_opt_dir: "{{ common_opt }}/java"
+  block:
+    - name: Ensure Java opt Folder
+      ansible.builtin.file:
+        state: directory
+        path: "{{ java_opt_dir }}"
+        mode: "755"
+      tags:
+        - java-debug
+        - java-test
+        - jdk
+        - jdtls
+        - lombok
+
+    - name: Download and Install Java
+      when: ansible_machine == 'arm64'
+      ansible.builtin.include_tasks: tasks/java/jdk.yml
+      loop: "{{ jdk_metadata }}"
+      loop_control:
+        loop_var: jdk
+      tags: jdk
+      vars:
+        # https://aws.amazon.com/corretto
+        jdk_metadata:
+          # https://github.com/corretto/corretto-21/releases
+          - jdk_version: 21.0.1.12.1
+            jdk_sha256: 0c4e08fc4b7c0c887651a97f315d6995eeac38627eb7bca0cb3c698d21af349f  # yamllint disable-line rule:line-length
+            jdk_archive_name: amazon-corretto-21.0.1.12.1-macosx-aarch64
+            jdk_opt_dir: "{{ java_opt_dir }}/java-21.jdk"
+            is_primary_jdk: true
+
+          # https://github.com/corretto/corretto-17/releases
+          - jdk_version: 17.0.10.7.1
+            jdk_sha256: 8bea3c09966e0d44c56f61d31d28c12a8df8d8ec0ef18ed2f6146c303abae754  # yamllint disable-line rule:line-length
+            jdk_archive_name: amazon-corretto-17.0.10.7.1-macosx-aarch64
+            jdk_opt_dir: "{{ java_opt_dir }}/java-17.jdk"
+            is_primary_jdk: false
+
+    - name: Eclipse JDT Language Server
+      ansible.builtin.import_tasks: tasks/java/jdtls.yml
+      tags: jdtls
+
+    - name: Lombok
+      ansible.builtin.import_tasks: tasks/java/lombok.yml
+      tags: lombok
+
+    - name: Java Test Runner
+      ansible.builtin.import_tasks: tasks/java/java-test.yml
+      tags: java-test
+
+    - name: Java Debug
+      ansible.builtin.import_tasks: tasks/java/java-debug.yml
+      tags: java-debug

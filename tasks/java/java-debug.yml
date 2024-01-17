@@ -1,0 +1,20 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Clone java-debug
+  ansible.builtin.git:
+    accept_newhostkey: true
+    depth: 1
+    dest: "{{ java_opt_dir }}/java-debug"
+    force: true
+    repo: git@github.com:microsoft/java-debug
+    version: main
+  register: clone
+
+- name: Build java-debug
+  when: clone.before != clone.after
+  ansible.builtin.command:
+    cmd: ./mvnw clean install -Dmaven.test.skip=true
+    chdir: "{{ java_opt_dir }}/java-debug"
+  changed_when: true

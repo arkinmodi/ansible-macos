@@ -71,7 +71,7 @@
         - npm
 
     - name: Java
-      ansible.builtin.import_tasks: tasks/java.yml
+      ansible.builtin.import_tasks: tasks/java/main.yml
       tags: java
 
     - name: Go
