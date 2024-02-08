@@ -12,6 +12,7 @@
 
     npm_packages:
       - "@tailwindcss/language-server"
+      - graphql-language-service-server
       - markdown-toc
       - prettier
       - typescript

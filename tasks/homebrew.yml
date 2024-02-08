@@ -20,6 +20,7 @@
       - tree
       - watch
       - wget
+      - yq
       - zsh
 
       # Use GNU versions over BSD
