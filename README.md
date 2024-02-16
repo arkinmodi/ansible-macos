@@ -17,6 +17,9 @@
 
     # Or if cloned locally
     ansible-playbook --ask-become-pass local.yml
+
+    # Shortcut for entering password
+    ansible-playbook ~/code/ansible-macos/local.yml -e "ansible_become_pass=$(op read '...')"
     ```
 
 ## Notes
