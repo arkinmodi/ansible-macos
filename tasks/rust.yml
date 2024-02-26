@@ -5,7 +5,7 @@
 - name: Install Rust
   when: ansible_machine == 'arm64'
   vars:
-    rust_version: 1.75.0
+    rust_version: 1.76.0
     rust_archive_name: "rust-{{ rust_version }}"
 
     # https://rust-lang.github.io/rustup/installation/other.html
