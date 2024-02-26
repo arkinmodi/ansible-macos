@@ -11,6 +11,7 @@
     node_sha256: 2e0fb297d802ae6fd045ee37cd45bd4e489eac11dec89dcd5223fc48e02a1937  # yamllint disable-line rule:line-length
 
     npm_packages:
+      - "@ansible/ansible-language-server"
       - "@tailwindcss/language-server"
       - graphql-language-service-server
       - markdown-toc
