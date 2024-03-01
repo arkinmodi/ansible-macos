@@ -15,6 +15,7 @@
       - git
       - jq
       - parallel
+      - pkl
       - pstree
       - rlwrap
       - tmux
