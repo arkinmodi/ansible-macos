@@ -23,10 +23,8 @@
         binary_name: fd
       - package_name: hyperfine
         binary_name: hyperfine
-      # NOTE: A dependency, libz-ng-sys v1.1.15, is failing to compile on
-      # rust 1.76.0. Switching to homebrew for the meantime.
-      # - package_name: onefetch
-      #   binary_name: onefetch
+      - package_name: onefetch
+        binary_name: onefetch
       - package_name: ripgrep
         binary_name: rg
       - package_name: stylua
