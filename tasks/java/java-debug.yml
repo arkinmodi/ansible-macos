@@ -15,6 +15,6 @@
 - name: Build java-debug
   when: clone.before != clone.after
   ansible.builtin.command:
-    cmd: ./mvnw clean install -Dmaven.test.skip=true
+    cmd: ./mvnw clean install -Dmaven.test.skip=true --update-snapshots
     chdir: "{{ java_opt_dir }}/java-debug"
   changed_when: true
