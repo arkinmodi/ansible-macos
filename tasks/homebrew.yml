@@ -6,6 +6,12 @@
   community.general.homebrew:
     upgrade_all: true
 
+- name: Setup Homebrew Taps
+  community.general.homebrew_tap:
+    state: present
+    name:
+      - homebrew/cask-fonts
+
 - name: Install Homebrew Packages
   community.general.homebrew:
     state: present
@@ -30,12 +36,6 @@
       - findutils
       - gnu-sed
       - gnu-tar
-
-- name: Setup Homebrew Taps
-  community.general.homebrew_tap:
-    state: present
-    name:
-      - homebrew/cask-fonts
 
 - name: Install Homebrew Cask Packages
   community.general.homebrew_cask:

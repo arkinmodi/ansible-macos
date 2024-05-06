@@ -23,6 +23,8 @@
         binary_name: fd
       - package_name: hyperfine
         binary_name: hyperfine
+      - package_name: jwt-cli
+        binary_name: jwt
       - package_name: onefetch
         binary_name: onefetch
       - package_name: ripgrep
