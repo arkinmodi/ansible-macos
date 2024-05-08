@@ -5,12 +5,12 @@
 - name: Install Rust
   when: ansible_machine == 'arm64'
   vars:
-    rust_version: 1.76.0
+    rust_version: 1.78.0
     rust_archive_name: "rust-{{ rust_version }}"
 
     # https://rust-lang.github.io/rustup/installation/other.html
-    rustup_version: 1.26.0
-    rustup_sha256: ed299a8fe762dc28161a99a03cf62836977524ad557ad70e13882d2f375d3983  # yamllint disable-line rule:line-length
+    rustup_version: 1.27.1
+    rustup_sha256: 760b18611021deee1a859c345d17200e0087d47f68dfe58278c57abe3a0d3dd0  # yamllint disable-line rule:line-length
     rustup_arch: aarch64-apple-darwin
 
     rust_components:
