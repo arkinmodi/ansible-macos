@@ -24,6 +24,9 @@ repos:
     rev: v24.2.0
     hooks:
       - id: ansible-lint
+        always_run: false
+        additional_dependencies:
+          - ansible
         types_or:
           - yaml
 
