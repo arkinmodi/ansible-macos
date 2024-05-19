@@ -29,7 +29,7 @@
   when: clone.before != clone.after
   block:
     - name: Clean Neovim Repository  # noqa: command-instead-of-module
-      ansible.builtin.command: git clean -ffxd
+      ansible.builtin.command: git -C {{ common_opt }}/neovim/repo clean -ffxd
       register: result
       changed_when: result.stdout != ""
 
