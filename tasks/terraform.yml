@@ -5,15 +5,15 @@
 - name: Install Terraform
   when: ansible_machine == 'arm64'
   vars:
-    terraform_version: 1.6.0
-    terraform_sha256: aaf3f6639c9fd3864059955a36ccdadd7b54bab681fbe760525548a53cc0c7ec  # yamllint disable-line rule:line-length
-    terraform_archive_name: "terraform_{{ terraform_version }}_darwin_arm64"
+    terraform_version: 1.8.0
+    terraform_sha256: abfb06eb80f1acd19ab8a01f6d24a4a5f99ba9b628c3b00a3b0c898709eea3b3  # yamllint disable-line rule:line-length
+    terraform_archive_name: terraform_{{ terraform_version }}_darwin_arm64
     terraform_opt_dir: "{{ common_opt }}/{{ terraform_archive_name }}"
   block:
     - name: Download Terraform zip
       ansible.builtin.get_url:
-        url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_archive_name }}.zip"  # yamllint disable-line rule:line-length
-        checksum: "sha256:{{ terraform_sha256 }}"
+        url: https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_archive_name }}.zip  # yamllint disable-line rule:line-length
+        checksum: sha256:{{ terraform_sha256 }}
         dest: "{{ tempdir.path }}/{{ terraform_archive_name }}.zip"
         mode: "755"
 
@@ -41,7 +41,7 @@
     - name: Find Old Terraform
       ansible.builtin.find:
         paths: "{{ common_opt }}"
-        pattern: "terraform_*"
+        pattern: terraform_*
         file_type: directory
       register: old_terraform
 
