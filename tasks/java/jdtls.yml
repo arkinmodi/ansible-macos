@@ -6,14 +6,14 @@
   vars:
     # https://download.eclipse.org/jdtls/milestones
     jdtls_version: 1.36.0
-    jdtls_archive_name: "jdt-language-server-{{ jdtls_version }}-202405301306"  # yamllint disable-line rule:line-length
+    jdtls_archive_name: jdt-language-server-{{ jdtls_version }}-202405301306  # yamllint disable-line rule:line-length
     jdtls_sha256: 028e274d06f4a61cad4ffd56f89ef414a8f65613c6d05d9467651b7fb03dae7b  # yamllint disable-line rule:line-length
     jdtls_opt_dir: "{{ java_opt_dir }}/{{ jdtls_archive_name }}"
   block:
     - name: Download Eclipse JDT Language Server tar
       ansible.builtin.get_url:
-        url: "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/{{ jdtls_version }}/{{ jdtls_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
-        checksum: "sha256:{{ jdtls_sha256 }}"
+        url: https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/{{ jdtls_version }}/{{ jdtls_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
+        checksum: sha256:{{ jdtls_sha256 }}
         dest: "{{ tempdir.path }}/{{ jdtls_archive_name }}.tar.gz"
         mode: "755"
 
@@ -42,7 +42,7 @@
     - name: Find Old Eclipse JDT Language Servers
       ansible.builtin.find:
         paths: "{{ java_opt_dir }}"
-        pattern: "jdt-language-server-*"
+        pattern: jdt-language-server-*
         file_type: directory
       register: old_jdtls
 

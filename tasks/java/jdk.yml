@@ -7,8 +7,8 @@
   block:
     - name: Download JDK tar
       ansible.builtin.get_url:
-        url: "https://corretto.aws/downloads/resources/{{ jdk.jdk_version }}/{{ jdk.jdk_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
-        checksum: "sha256:{{ jdk.jdk_sha256 }}"
+        url: https://corretto.aws/downloads/resources/{{ jdk.jdk_version }}/{{ jdk.jdk_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
+        checksum: sha256:{{ jdk.jdk_sha256 }}
         dest: "{{ tempdir.path }}/{{ jdk.jdk_archive_name }}.tar.gz"
         mode: "755"
 

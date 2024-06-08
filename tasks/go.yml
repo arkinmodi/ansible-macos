@@ -7,7 +7,7 @@
   vars:
     go_version: 1.22.0
     go_sha256: bf8e388b09134164717cd52d3285a4ab3b68691b80515212da0e9f56f518fb1e  # yamllint disable-line rule:line-length
-    go_archive_name: "go{{ go_version }}.darwin-arm64"
+    go_archive_name: go{{ go_version }}.darwin-arm64
     go_opt_dir: "{{ common_opt }}/go-{{ go_version }}"  # yamllint disable-line rule:line-length
 
     go_packages:
@@ -21,8 +21,8 @@
     - name: Download Go tar
       ansible.builtin.get_url:
         # https://go.dev/dl/
-        url: "https://go.dev/dl/{{ go_archive_name }}.tar.gz"
-        checksum: "sha256:{{ go_sha256 }}"
+        url: https://go.dev/dl/{{ go_archive_name }}.tar.gz
+        checksum: sha256:{{ go_sha256 }}
         dest: "{{ tempdir.path }}/{{ go_archive_name }}.tar.gz"
         mode: "755"
 
@@ -50,7 +50,7 @@
 
     - name: Install Go Packages
       ansible.builtin.command:
-        cmd: "go install {{ item.package_name }}@latest"
+        cmd: go install {{ item.package_name }}@latest
       register: result
       changed_when: result.stderr != ""
       loop: "{{ go_packages }}"
@@ -65,7 +65,7 @@
     - name: Find Old Go
       ansible.builtin.find:
         paths: "{{ common_opt }}"
-        pattern: "go-*"
+        pattern: go-*
         file_type: directory
       register: old_gos
 

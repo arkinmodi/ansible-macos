@@ -22,4 +22,4 @@
   ansible.builtin.command: podman-mac-helper install
   become: true
   register: system_helper
-  changed_when: '"helper is already installed" not in system_helper.stderr'
+  changed_when: "'helper is already installed' not in system_helper.stderr"
