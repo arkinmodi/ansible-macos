@@ -1,0 +1,18 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Download tar - {{ download_and_extract_tar_pretty_name }}
+  ansible.builtin.get_url:
+    url: "{{ download_and_extract_tar_download_url }}"
+    checksum: sha256:{{ download_and_extract_tar_sha256 }}
+    dest: "{{ download_and_extract_tar_tempdir_path }}/{{ download_and_extract_tar_archive_name }}"  # yamllint disable-line rule:line-length
+    mode: "755"
+
+- name: Unarchive tar - {{ download_and_extract_tar_pretty_name }}
+  ansible.builtin.unarchive:
+    src: "{{ download_and_extract_tar_tempdir_path }}/{{ download_and_extract_tar_archive_name }}"  # yamllint disable-line rule:line-length
+    dest: "{{ download_and_extract_tar_install_dir | dirname }}"
+    remote_src: true
+    creates: "{{ download_and_extract_tar_install_dir }}"
+    mode: "755"

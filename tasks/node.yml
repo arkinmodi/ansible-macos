@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
 # yamllint enable rule:line-length
 ---
-- name: Install Nodejs
+- name: Install Node.js
   when: ansible_machine == 'arm64'
   vars:
     node_version: v20.9.0
@@ -21,20 +21,16 @@
       - vscode-langservers-extracted
       - yaml-language-server
   block:
-    - name: Download Nodejs tar
-      ansible.builtin.get_url:
-        url: https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.xz  # yamllint disable-line rule:line-length
-        checksum: sha256:{{ node_sha256 }}
-        dest: "{{ tempdir.path }}/{{ node_archive_name }}.tar.xz"
-        mode: "755"
-
-    - name: Unarchive Nodejs tar
-      ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ node_archive_name }}.tar.xz"
-        dest: "{{ common_opt }}"
-        remote_src: true
-        creates: "{{ node_opt_dir }}"
-        mode: "755"
+    - name: Download and Extract Tarball
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ node_archive_name }}.tar.xz"
+        download_and_extract_tar_download_url: https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.xz  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: "{{ node_opt_dir }}"
+        download_and_extract_tar_pretty_name: Node.js
+        download_and_extract_tar_sha256: "{{ node_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
 
     - name: Install NPM Packages
       community.general.npm:
@@ -45,7 +41,7 @@
       environment:
         PATH: "{{ node_opt_dir }}/bin:{{ ansible_env.PATH }}"
 
-    - name: Link Nodejs and NPM Package Binaries
+    - name: Link Node.js and NPM Package Binaries
       ansible.builtin.file:
         state: link
         src: "{{ item }}"
@@ -53,19 +49,10 @@
       with_fileglob:
         - "{{ node_opt_dir }}/bin/*"
 
-    - name: Find Old Nodejs
-      ansible.builtin.find:
-        paths: "{{ common_opt }}"
-        pattern: node-v*
-        file_type: directory
-      register: old_node
-
-    - name: Purge Old Nodejs
-      ansible.builtin.file:
-        state: absent
-        path: "{{ item.path }}"
+    - name: Purge Old Node.js
+      ansible.builtin.import_role:
+        name: purge_old_install
       vars:
-        paths_to_keep:
-          - "{{ node_opt_dir }}"
-      when: item.path not in paths_to_keep
-      loop: "{{ old_node.files }}"
+        purge_old_install_new_install: "{{ node_opt_dir }}"
+        purge_old_install_pattern: node-v*
+        purge_old_install_pretty_name: Node.js
