@@ -5,3 +5,11 @@ rules:
   quoted-strings:
     quote-type: double
     required: only-when-needed
+  braces:
+    max-spaces-inside: 1
+  comments-indentation: false
+  comments:
+    min-spaces-from-content: 1
+  octal-values:
+    forbid-explicit-octal: true
+    forbid-implicit-octal: true
