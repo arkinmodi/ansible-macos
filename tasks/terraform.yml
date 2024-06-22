@@ -8,49 +8,31 @@
     terraform_version: 1.8.0
     terraform_sha256: abfb06eb80f1acd19ab8a01f6d24a4a5f99ba9b628c3b00a3b0c898709eea3b3  # yamllint disable-line rule:line-length
     terraform_archive_name: terraform_{{ terraform_version }}_darwin_arm64
-    terraform_opt_dir: "{{ common_opt }}/{{ terraform_archive_name }}"
+    terraform_opt_dir: "{{ common_opt }}/terraform-{{ terraform_version }}"
   block:
-    - name: Download Terraform zip
-      ansible.builtin.get_url:
-        url: https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_archive_name }}.zip  # yamllint disable-line rule:line-length
-        checksum: sha256:{{ terraform_sha256 }}
-        dest: "{{ tempdir.path }}/{{ terraform_archive_name }}.zip"
-        mode: "755"
-
-    - name: Ensure opt folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ terraform_opt_dir }}"
-        mode: "755"
-
-    - name: Unzip Terraform zip
-      ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ terraform_archive_name }}.zip"
-        dest: "{{ terraform_opt_dir }}"
-        remote_src: true
-        creates: >
-          "{{ terraform_opt_dir }}/terraform"
-        mode: "755"
+    - name: Download and Extract Tarball
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ terraform_archive_name }}.zip"  # yamllint disable-line rule:line-length
+        download_and_extract_tar_download_url: https://releases.hashicorp.com/terraform/{{ terraform_version }}/{{ terraform_archive_name }}.zip  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: "{{ terraform_archive_name }}"
+        download_and_extract_tar_opt_dir: "{{ terraform_opt_dir }}"
+        download_and_extract_tar_pretty_name: Terraform
+        download_and_extract_tar_sha256: "{{ terraform_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: terraform
 
     - name: Link Terraform Binary
       ansible.builtin.file:
         state: link
-        src: "{{ terraform_opt_dir }}/terraform"
+        src: "{{ terraform_opt_dir }}/{{ terraform_archive_name }}/terraform"
         dest: "{{ common_bin }}/terraform"
 
-    - name: Find Old Terraform
-      ansible.builtin.find:
-        paths: "{{ common_opt }}"
-        pattern: terraform_*
-        file_type: directory
-      register: old_terraform
-
     - name: Purge Old Terraform
-      ansible.builtin.file:
-        state: absent
-        path: "{{ item.path }}"
+      ansible.builtin.import_role:
+        name: purge_old_install
       vars:
-        paths_to_keep:
-          - "{{ terraform_opt_dir }}"
-      when: item.path not in paths_to_keep
-      loop: "{{ old_terraform.files }}"
+        purge_old_install_new_install: "{{ terraform_opt_dir }}"
+        purge_old_install_pattern: terraform-*
+        purge_old_install_pretty_name: Terraform
