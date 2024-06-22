@@ -8,23 +8,15 @@
     cpython_archive_name: cpython-{{ cpython_version }}+{{ release_tag }}-aarch64-apple-darwin-pgo+lto-full  # yamllint disable-line rule:line-length
     cpython_sha256: 25fc8cd41e975d18d13bcc8f8beffa096ff8a0b86c4a737e1c6617900092c966  # yamllint disable-line rule:line-length
   block:
-    - name: Download CPython
-      ansible.builtin.get_url:
-        url: https://github.com/indygreg/python-build-standalone/releases/download/{{ release_tag }}/{{ cpython_archive_name }}.tar.zst  # yamllint disable-line rule:line-length
-        checksum: sha256:{{ cpython_sha256 }}
-        dest: "{{ tempdir.path }}/{{ cpython_archive_name }}.tar.zst"
-        mode: "755"
-
-    - name: Ensure CPython opt Directory
-      ansible.builtin.file:
-        state: directory
-        path: "{{ cpython_opt_dir }}"
-        mode: "755"
-
-    - name: Unarchive CPython tar
-      ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ cpython_archive_name }}.tar.zst"
-        dest: "{{ cpython_opt_dir }}"
-        remote_src: true
-        creates: "{{ python_exe }}"
-        mode: "755"
+    - name: Download and Extract Tarball
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ cpython_archive_name }}.tar.zst"  # yamllint disable-line rule:line-length
+        download_and_extract_tar_download_url: https://github.com/indygreg/python-build-standalone/releases/download/{{ release_tag }}/{{ cpython_archive_name }}.tar.zst  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: cpython
+        download_and_extract_tar_opt_dir: "{{ python_opt_dir }}"
+        download_and_extract_tar_pretty_name: CPython 3
+        download_and_extract_tar_sha256: "{{ cpython_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: python/install/bin/python3
