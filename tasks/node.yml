@@ -5,10 +5,11 @@
 - name: Install Node.js
   when: ansible_machine == 'arm64'
   vars:
+    node_sha256: 2e0fb297d802ae6fd045ee37cd45bd4e489eac11dec89dcd5223fc48e02a1937  # yamllint disable-line rule:line-length
     node_version: v20.9.0
     node_archive_name: node-{{ node_version }}-darwin-arm64
-    node_opt_dir: "{{ common_opt }}/{{ node_archive_name }}"
-    node_sha256: 2e0fb297d802ae6fd045ee37cd45bd4e489eac11dec89dcd5223fc48e02a1937  # yamllint disable-line rule:line-length
+    node_opt_dir: "{{ common_opt }}/node-{{ node_version }}"
+    node_install_dir: "{{ node_opt_dir }}/{{ node_archive_name }}"
 
     npm_packages:
       - "@ansible/ansible-language-server"
@@ -27,10 +28,12 @@
       vars:
         download_and_extract_tar_archive_name: "{{ node_archive_name }}.tar.xz"
         download_and_extract_tar_download_url: https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.xz  # yamllint disable-line rule:line-length
-        download_and_extract_tar_install_dir: "{{ node_opt_dir }}"
+        download_and_extract_tar_install_dir: "{{ node_archive_name }}"
+        download_and_extract_tar_opt_dir: "{{ node_opt_dir }}"
         download_and_extract_tar_pretty_name: Node.js
         download_and_extract_tar_sha256: "{{ node_sha256 }}"
         download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: "{{ node_archive_name }}/bin/node"
 
     - name: Install NPM Packages
       community.general.npm:
@@ -39,7 +42,7 @@
         state: latest
       loop: "{{ npm_packages }}"
       environment:
-        PATH: "{{ node_opt_dir }}/bin:{{ ansible_env.PATH }}"
+        PATH: "{{ node_install_dir }}/{{ node_archive_name }}/bin:{{ ansible_env.PATH }}"  # yamllint disable-line rule:line-length
 
     - name: Link Node.js and NPM Package Binaries
       ansible.builtin.file:
@@ -47,7 +50,7 @@
         src: "{{ item }}"
         dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
-        - "{{ node_opt_dir }}/bin/*"
+        - "{{ node_install_dir }}/{{ node_archive_name }}/bin/*"
 
     - name: Purge Old Node.js
       ansible.builtin.import_role:

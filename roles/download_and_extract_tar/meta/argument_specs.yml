@@ -12,7 +12,13 @@ argument_specs:
       download_and_extract_tar_download_url:
         type: str
         required: true
+      download_and_extract_tar_force_recreate:
+        type: bool
+        default: false
       download_and_extract_tar_install_dir:
+        type: str
+        required: true
+      download_and_extract_tar_opt_dir:
         type: str
         required: true
       download_and_extract_tar_pretty_name:
@@ -22,5 +28,8 @@ argument_specs:
         type: str
         required: true
       download_and_extract_tar_tempdir_path:
+        type: str
+        required: true
+      download_and_extract_tar_verify:
         type: str
         required: true

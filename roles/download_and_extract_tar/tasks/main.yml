@@ -2,17 +2,49 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
 # yamllint enable rule:line-length
 ---
-- name: Download tar - {{ download_and_extract_tar_pretty_name }}
-  ansible.builtin.get_url:
-    url: "{{ download_and_extract_tar_download_url }}"
-    checksum: sha256:{{ download_and_extract_tar_sha256 }}
-    dest: "{{ download_and_extract_tar_tempdir_path }}/{{ download_and_extract_tar_archive_name }}"  # yamllint disable-line rule:line-length
-    mode: "755"
+- name: Download and Extract Tarball
+  vars:
+    archive_name: "{{ download_and_extract_tar_archive_name }}"
+    download_url: "{{ download_and_extract_tar_download_url }}"
+    force_recreate: "{{ download_and_extract_tar_force_recreate }}"
+    install_dir: "{{ download_and_extract_tar_install_dir }}"
+    opt_dir: "{{ download_and_extract_tar_opt_dir }}"
+    pretty_name: "{{ download_and_extract_tar_pretty_name }}"
+    sha256: "{{ download_and_extract_tar_sha256 }}"
+    tempdir_path: "{{ download_and_extract_tar_tempdir_path }}"
+    verify: "{{ download_and_extract_tar_verify }}"
+  block:
+    - name: Check if target exists - {{ pretty_name }}
+      ansible.builtin.stat:
+        path: "{{ opt_dir }}/{{ install_dir }}/{{ verify }}"
+      register: stat_verify
 
-- name: Unarchive tar - {{ download_and_extract_tar_pretty_name }}
-  ansible.builtin.unarchive:
-    src: "{{ download_and_extract_tar_tempdir_path }}/{{ download_and_extract_tar_archive_name }}"  # yamllint disable-line rule:line-length
-    dest: "{{ download_and_extract_tar_install_dir | dirname }}"
-    remote_src: true
-    creates: "{{ download_and_extract_tar_install_dir }}"
-    mode: "755"
+    - name: Download and Extract Tarball
+      when: force_recreate or not stat_verify.stat.exists
+      block:
+        - name: Download tar - {{ pretty_name }}
+          ansible.builtin.get_url:
+            url: "{{ download_url }}"
+            checksum: sha256:{{ sha256 }}
+            dest: "{{ tempdir_path }}/{{ archive_name }}"
+            mode: "755"
+
+        - name: Purge opt folder - {{ pretty_name }}
+          when: force_recreate
+          ansible.builtin.file:
+            state: absent
+            path: "{{ opt_dir }}/{{ install_dir }}"
+
+        - name: Ensure opt folder - {{ pretty_name }}
+          ansible.builtin.file:
+            state: directory
+            path: "{{ opt_dir }}/{{ install_dir }}"
+            mode: "755"
+
+        - name: Unarchive tar - {{ pretty_name }}
+          ansible.builtin.unarchive:
+            src: "{{ tempdir_path }}/{{ archive_name }}"
+            dest: "{{ opt_dir }}/{{ install_dir }}"
+            remote_src: true
+            creates: "{{ opt_dir }}/{{ install_dir }}/{{ verify }}"
+            mode: "755"

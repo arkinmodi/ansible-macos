@@ -5,10 +5,11 @@
 - name: Download and Install Go & Purge Old Go
   when: ansible_machine == 'arm64'
   vars:
-    go_version: 1.22.0
     go_sha256: bf8e388b09134164717cd52d3285a4ab3b68691b80515212da0e9f56f518fb1e  # yamllint disable-line rule:line-length
+    go_version: 1.22.0
     go_archive_name: go{{ go_version }}.darwin-arm64
-    go_opt_dir: "{{ common_opt }}/go-{{ go_version }}"  # yamllint disable-line rule:line-length
+    go_opt_dir: "{{ common_opt }}/go-{{ go_version }}"
+    go_install_dir: "{{ go_opt_dir }}/{{ go_archive_name }}"
 
     go_packages:
       - package_name: golang.org/x/tools/gopls
@@ -18,27 +19,18 @@
   environment:
     GOPATH: "{{ go_opt_dir }}"
   block:
-    - name: Download Go tar
-      ansible.builtin.get_url:
-        # https://go.dev/dl/
-        url: https://go.dev/dl/{{ go_archive_name }}.tar.gz
-        checksum: sha256:{{ go_sha256 }}
-        dest: "{{ tempdir.path }}/{{ go_archive_name }}.tar.gz"
-        mode: "755"
-
-    - name: Ensure opt folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ go_opt_dir }}/{{ go_archive_name }}"
-        mode: "755"
-
-    - name: Unarchive Go tar
-      ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ go_archive_name }}.tar.gz"
-        dest: "{{ go_opt_dir }}/{{ go_archive_name }}"
-        remote_src: true
-        creates: "{{ go_opt_dir }}/{{ go_archive_name }}/go/bin/go"
-        mode: "755"
+    - name: Download and Extract Tarball
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ go_archive_name }}.tar.gz"
+        download_and_extract_tar_download_url: https://go.dev/dl/{{ go_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: "{{ go_archive_name }}"
+        download_and_extract_tar_opt_dir: "{{ go_opt_dir }}"
+        download_and_extract_tar_pretty_name: Go
+        download_and_extract_tar_sha256: "{{ go_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: go/bin/go
 
     - name: Link Go Binaries
       ansible.builtin.file:
@@ -46,7 +38,7 @@
         src: "{{ item }}"
         dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
-        - "{{ go_opt_dir }}/{{ go_archive_name }}/go/bin/*"
+        - "{{ go_install_dir }}/go/bin/*"
 
     - name: Install Go Packages
       ansible.builtin.command:
@@ -62,20 +54,10 @@
         dest: "{{ common_bin }}/{{ item.binary_name }}"
       loop: "{{ go_packages }}"
 
-    - name: Find Old Go
-      ansible.builtin.find:
-        paths: "{{ common_opt }}"
-        pattern: go-*
-        file_type: directory
-      register: old_gos
-
     - name: Purge Old Go
-      become: true
-      ansible.builtin.file:
-        state: absent
-        path: "{{ item.path }}"
+      ansible.builtin.import_role:
+        name: purge_old_install
       vars:
-        paths_to_keep:
-          - "{{ go_opt_dir }}"
-      when: item.path not in paths_to_keep
-      loop: "{{ old_gos.files }}"
+        purge_old_install_new_install: "{{ go_opt_dir }}"
+        purge_old_install_pattern: go-*
+        purge_old_install_pretty_name: Go
