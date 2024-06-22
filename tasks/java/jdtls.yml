@@ -8,28 +8,21 @@
     jdtls_version: 1.36.0
     jdtls_archive_name: jdt-language-server-{{ jdtls_version }}-202405301306  # yamllint disable-line rule:line-length
     jdtls_sha256: 028e274d06f4a61cad4ffd56f89ef414a8f65613c6d05d9467651b7fb03dae7b  # yamllint disable-line rule:line-length
-    jdtls_opt_dir: "{{ java_opt_dir }}/{{ jdtls_archive_name }}"
+    jdtls_opt_dir: "{{ java_opt_dir }}/jdtls-{{ jdtls_version }}"
+    jdtls_install_dir: "{{ jdtls_opt_dir }}/{{ jdtls_archive_name }}"
   block:
-    - name: Download Eclipse JDT Language Server tar
-      ansible.builtin.get_url:
-        url: https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/{{ jdtls_version }}/{{ jdtls_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
-        checksum: sha256:{{ jdtls_sha256 }}
-        dest: "{{ tempdir.path }}/{{ jdtls_archive_name }}.tar.gz"
-        mode: "755"
-
-    - name: Ensure opt folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ jdtls_opt_dir }}"
-        mode: "755"
-
-    - name: Unarchive Eclipse JDT Language Server tar
-      ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ jdtls_archive_name }}.tar.gz"
-        dest: "{{ jdtls_opt_dir }}"
-        remote_src: true
-        creates: "{{ jdtls_opt_dir }}/bin/jdtls"
-        mode: "755"
+    - name: Download and Extract Tarball
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ jdtls_archive_name }}.tar.gz"
+        download_and_extract_tar_download_url: https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/{{ jdtls_version }}/{{ jdtls_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: "{{ jdtls_archive_name }}"
+        download_and_extract_tar_opt_dir: "{{ jdtls_opt_dir }}"
+        download_and_extract_tar_pretty_name: Eclipse JDT Language Server
+        download_and_extract_tar_sha256: "{{ jdtls_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: bin/jdtls
 
     - name: Link Eclipse JDT Language Server Binaries
       ansible.builtin.file:
@@ -37,21 +30,12 @@
         src: "{{ item }}"
         dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
-        - "{{ jdtls_opt_dir }}/bin/*"
-
-    - name: Find Old Eclipse JDT Language Servers
-      ansible.builtin.find:
-        paths: "{{ java_opt_dir }}"
-        pattern: jdt-language-server-*
-        file_type: directory
-      register: old_jdtls
+        - "{{ jdtls_install_dir }}/bin/*"
 
     - name: Purge Old Eclipse JDT Language Servers
-      ansible.builtin.file:
-        state: absent
-        path: "{{ item.path }}"
+      ansible.builtin.import_role:
+        name: purge_old_install
       vars:
-        paths_to_keep:
-          - "{{ jdtls_opt_dir }}"
-      when: item.path not in paths_to_keep
-      loop: "{{ old_jdtls.files }}"
+        purge_old_install_new_install: "{{ jdtls_opt_dir }}"
+        purge_old_install_pattern: jdtls-*
+        purge_old_install_pretty_name: Eclipse JDT Language Servers
