@@ -6,8 +6,8 @@
   when: ansible_machine == 'arm64'
   vars:
     node_sha256: 2e0fb297d802ae6fd045ee37cd45bd4e489eac11dec89dcd5223fc48e02a1937  # yamllint disable-line rule:line-length
-    node_version: v20.9.0
-    node_archive_name: node-{{ node_version }}-darwin-arm64
+    node_version: 20.9.0
+    node_archive_name: node-v{{ node_version }}-darwin-arm64
     node_opt_dir: "{{ common_opt }}/node-{{ node_version }}"
     node_install_dir: "{{ node_opt_dir }}/{{ node_archive_name }}"
 
@@ -27,7 +27,7 @@
         name: download_and_extract_tar
       vars:
         download_and_extract_tar_archive_name: "{{ node_archive_name }}.tar.xz"
-        download_and_extract_tar_download_url: https://nodejs.org/dist/{{ node_version }}/{{ node_archive_name }}.tar.xz  # yamllint disable-line rule:line-length
+        download_and_extract_tar_download_url: https://nodejs.org/dist/v{{ node_version }}/{{ node_archive_name }}.tar.xz  # yamllint disable-line rule:line-length
         download_and_extract_tar_install_dir: "{{ node_archive_name }}"
         download_and_extract_tar_opt_dir: "{{ node_opt_dir }}"
         download_and_extract_tar_pretty_name: Node.js
@@ -57,5 +57,5 @@
         name: purge_old_install
       vars:
         purge_old_install_new_install: "{{ node_opt_dir }}"
-        purge_old_install_pattern: node-v*
+        purge_old_install_pattern: node-*
         purge_old_install_pretty_name: Node.js
