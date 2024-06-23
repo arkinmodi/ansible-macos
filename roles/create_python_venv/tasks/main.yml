@@ -7,8 +7,13 @@
     path: "{{ create_python_venv_dir }}"
   register: stat_venv
 
+# NOTE: "/meta/argument_specs.yml" validation has an "always" tag which causes
+# this conditional to always be checked. Therefore we need to add
+# `stat_venv is defined` as stat_venv will be undefined.
+# https://github.com/ansible/ansible/issues/82505
+
 - name: Create virtualenv
-  when: not stat_venv.stat.exists
+  when: stat_venv is defined and not stat_venv.stat.exists
   vars:
     virtualenv_pyz: "{{ create_python_venv_tempdir_path }}/virtualenv.pyz"
   block:
