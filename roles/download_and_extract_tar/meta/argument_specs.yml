@@ -27,6 +27,9 @@ argument_specs:
       download_and_extract_tar_sha256:
         type: str
         required: true
+      download_and_extract_tar_strip_components:
+        type: int
+        default: 0
       download_and_extract_tar_tempdir_path:
         type: str
         required: true

@@ -11,6 +11,7 @@
     opt_dir: "{{ download_and_extract_tar_opt_dir }}"
     pretty_name: "{{ download_and_extract_tar_pretty_name }}"
     sha256: "{{ download_and_extract_tar_sha256 }}"
+    strip_components: "{{ download_and_extract_tar_strip_components }}"
     tempdir_path: "{{ download_and_extract_tar_tempdir_path }}"
     verify: "{{ download_and_extract_tar_verify }}"
   block:
@@ -48,3 +49,5 @@
             remote_src: true
             creates: "{{ opt_dir }}/{{ install_dir }}/{{ verify }}"
             mode: "755"
+            extra_opts:
+              - --strip-components={{ strip_components }}

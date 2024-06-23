@@ -4,34 +4,41 @@
 ---
 - name: Download and Install Java & Purge Old Java
   tags: jdk
+  vars:
+    jdk_install_dir: >-
+      {{ java_opt_dir }}/java-{{ jdk.jdk_version | split('.') | first }}.jdk
   block:
-    - name: Download JDK tar
-      ansible.builtin.get_url:
-        url: https://corretto.aws/downloads/resources/{{ jdk.jdk_version }}/{{ jdk.jdk_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
-        checksum: sha256:{{ jdk.jdk_sha256 }}
-        dest: "{{ tempdir.path }}/{{ jdk.jdk_archive_name }}.tar.gz"
-        mode: "755"
+    - name: Check if JDK exists
+      ansible.builtin.stat:
+        path: "{{ jdk_install_dir }}/Contents/Home/bin/java"
+      register: stat_jdk
 
-    - name: Purge JDK opt Folder
-      ansible.builtin.file:
-        state: absent
-        path: "{{ jdk.jdk_opt_dir }}"
+    - name: Get JDK version
+      when: stat_jdk.stat.exists
+      ansible.builtin.command:
+        cmd: "{{ jdk_install_dir }}/Contents/Home/bin/jshell -"
+        stdin: System.out.println(System.getProperty("java.version"));
+      changed_when: false
+      register: existing_java_version
 
-    - name: Ensure JDK opt Folder
-      ansible.builtin.file:
-        state: directory
-        path: "{{ jdk.jdk_opt_dir }}"
-        mode: "755"
-
-    - name: Unarchive JDK tar
-      ansible.builtin.unarchive:
-        src: "{{ tempdir.path }}/{{ jdk.jdk_archive_name }}.tar.gz"
-        dest: "{{ jdk.jdk_opt_dir }}"
-        remote_src: true
-        creates: "{{ jdk.jdk_opt_dir }}/Contents/Home/bin/java"
-        mode: "755"
-        extra_opts:
-          - --strip-components=1
+    - name: Download and Extract Tarball
+      when: >-
+        not stat_jdk.stat.exists or
+        existing_java_version.stdout != jdk.java_version
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: >-
+          {{ jdk.jdk_archive_name }}.tar.gz
+        download_and_extract_tar_download_url: https://corretto.aws/downloads/resources/{{ jdk.jdk_version }}/{{ jdk.jdk_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
+        download_and_extract_tar_force_recreate: true
+        download_and_extract_tar_install_dir: "{{ jdk_install_dir | basename }}"
+        download_and_extract_tar_opt_dir: "{{ java_opt_dir }}"
+        download_and_extract_tar_pretty_name: JDK {{ jdk.jdk_version }}
+        download_and_extract_tar_sha256: "{{ jdk.jdk_sha256 }}"
+        download_and_extract_tar_strip_components: 1
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: Contents/Home/bin/java
 
     - name: Link JDK Binaries
       when: jdk.is_primary_jdk
@@ -40,4 +47,4 @@
         src: "{{ item }}"
         dest: "{{ common_bin }}/{{ item | basename }}"
       with_fileglob:
-        - "{{ jdk.jdk_opt_dir }}/Contents/Home/bin/*"
+        - "{{ jdk_install_dir }}/Contents/Home/bin/*"

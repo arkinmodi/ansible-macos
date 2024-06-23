@@ -19,7 +19,7 @@
         - lombok
 
     - name: Download and Install Java
-      when: ansible_machine == 'arm64'
+      when: ansible_machine == "arm64"
       ansible.builtin.include_tasks: tasks/java/jdk.yml
       loop: "{{ jdk_metadata }}"
       loop_control:
@@ -29,17 +29,17 @@
         # https://aws.amazon.com/corretto
         jdk_metadata:
           # https://github.com/corretto/corretto-21/releases
-          - jdk_version: 21.0.1.12.1
+          - java_version: 21.0.1
+            jdk_version: 21.0.1.12.1
             jdk_sha256: 0c4e08fc4b7c0c887651a97f315d6995eeac38627eb7bca0cb3c698d21af349f  # yamllint disable-line rule:line-length
             jdk_archive_name: amazon-corretto-21.0.1.12.1-macosx-aarch64
-            jdk_opt_dir: "{{ java_opt_dir }}/java-21.jdk"
             is_primary_jdk: true
 
           # https://github.com/corretto/corretto-17/releases
-          - jdk_version: 17.0.10.7.1
+          - java_version: 17.0.10
+            jdk_version: 17.0.10.7.1
             jdk_sha256: 8bea3c09966e0d44c56f61d31d28c12a8df8d8ec0ef18ed2f6146c303abae754  # yamllint disable-line rule:line-length
             jdk_archive_name: amazon-corretto-17.0.10.7.1-macosx-aarch64
-            jdk_opt_dir: "{{ java_opt_dir }}/java-17.jdk"
             is_primary_jdk: false
 
     - name: Eclipse JDT Language Server
