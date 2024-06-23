@@ -1,0 +1,23 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/role-arg-spec.json
+# yamllint enable rule:line-length
+---
+argument_specs:
+  main:
+    short_description: Create Python Virtual Environment
+    options:
+      create_python_venv_dir:
+        type: str
+        required: true
+      create_python_venv_packages:
+        type: list
+        default: []
+      create_python_venv_pretty_name:
+        type: str
+        default: "{{ create_python_venv_dir | basename }}"
+      create_python_venv_python_exe:
+        type: str
+        required: true
+      create_python_venv_tempdir_path:
+        type: str
+        required: true

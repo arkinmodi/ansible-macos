@@ -1,0 +1,11 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/role-arg-spec.json
+# yamllint enable rule:line-length
+---
+argument_specs:
+  main:
+    short_description: Download virtualenv.pyz
+    options:
+      download_python_virtualenv_pyz_dir:
+        type: str
+        required: true

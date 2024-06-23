@@ -20,19 +20,13 @@
       - yt-dlp
   block:
     - name: Create virtualenv
-      ansible.builtin.command:
-        argv:
-          - "{{ ansible_python.executable }}"
-          - "{{ virtualenv_pyz }}"
-          - -p={{ python_exe }}
-          - "{{ target_venv }}"
-        creates: "{{ target_venv }}/bin/python3"
-
-    - name: Install Python Packages
-      ansible.builtin.pip:
-        virtualenv: "{{ target_venv }}"
-        state: latest  # noqa package-latest
-        name: "{{ python_packages }}"
+      ansible.builtin.import_role:
+        name: create_python_venv
+      vars:
+        create_python_venv_dir: "{{ target_venv }}"
+        create_python_venv_packages: "{{ python_packages }}"
+        create_python_venv_python_exe: "{{ python_exe }}"
+        create_python_venv_tempdir_path: "{{ tempdir.path }}"
 
     - name: Link Python and Pip Binaries
       ansible.builtin.file:

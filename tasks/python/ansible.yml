@@ -8,25 +8,15 @@
     python_packages:
       - ansible
       - ansible-lint
-
-      # Ansible is not python 3.12 ready
-      # Ansible 2.16 should fix this
-      - setuptools
   block:
-    - name: Create Ansible virtualenv
-      ansible.builtin.command:
-        argv:
-          - "{{ ansible_python.executable }}"
-          - "{{ virtualenv_pyz }}"
-          - -p={{ python_exe }}
-          - "{{ target_venv }}"
-        creates: "{{ target_venv }}/bin/python3"
-
-    - name: Install Ansible Packages
-      ansible.builtin.pip:
-        virtualenv: "{{ target_venv }}"
-        state: latest  # noqa package-latest
-        name: "{{ python_packages }}"
+    - name: Create virtualenv
+      ansible.builtin.import_role:
+        name: create_python_venv
+      vars:
+        create_python_venv_dir: "{{ target_venv }}"
+        create_python_venv_packages: "{{ python_packages }}"
+        create_python_venv_python_exe: "{{ python_exe }}"
+        create_python_venv_tempdir_path: "{{ tempdir.path }}"
 
     - name: Link Ansible Package Binaries
       ansible.builtin.file:

@@ -3,25 +3,15 @@
 # yamllint enable rule:line-length
 ---
 - name: Setup Python
-  when: ansible_machine == 'arm64'
+  when: ansible_machine == "arm64"
   vars:
     cpython_version: 3.12.0
     python_opt_dir: "{{ common_opt }}/python-{{ cpython_version }}"
-    cpython_opt_dir: "{{ python_opt_dir }}/cpython"
-    python_exe: "{{ cpython_opt_dir }}/python/install/bin/python3"
-    virtualenv_pyz: "{{ tempdir.path }}/virtualenv.pyz"
+    python_exe: "{{ python_opt_dir }}/cpython/python/install/bin/python3"
+    cpython_release_tag: "20231002"
+    cpython_archive_name: cpython-{{ cpython_version }}+{{ cpython_release_tag }}-aarch64-apple-darwin-pgo+lto-full  # yamllint disable-line rule:line-length
+    cpython_sha256: 25fc8cd41e975d18d13bcc8f8beffa096ff8a0b86c4a737e1c6617900092c966  # yamllint disable-line rule:line-length
   block:
-    - name: Download virtualenv.pyz
-      ansible.builtin.get_url:
-        url: https://bootstrap.pypa.io/virtualenv.pyz
-        dest: "{{ virtualenv_pyz }}"
-        mode: "755"
-      tags:
-        - ansible
-        - aws
-        - cpython
-        - venv
-
     - name: Ensure opt Folder
       ansible.builtin.file:
         state: directory
@@ -33,8 +23,18 @@
         - cpython
         - venv
 
-    - name: CPython
-      ansible.builtin.import_tasks: tasks/python/cpython.yml
+    - name: Install CPython 3
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ cpython_archive_name }}.tar.zst"  # yamllint disable-line rule:line-length
+        download_and_extract_tar_download_url: https://github.com/indygreg/python-build-standalone/releases/download/{{ cpython_release_tag }}/{{ cpython_archive_name }}.tar.zst  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: cpython
+        download_and_extract_tar_opt_dir: "{{ python_opt_dir }}"
+        download_and_extract_tar_pretty_name: CPython 3
+        download_and_extract_tar_sha256: "{{ cpython_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: python/install/bin/python3
       tags: cpython
 
     - name: Python 3 Virtual Environment

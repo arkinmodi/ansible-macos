@@ -1,0 +1,36 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Check if virtualenv exists - {{ create_python_venv_pretty_name }}
+  ansible.builtin.stat:
+    path: "{{ create_python_venv_dir }}"
+  register: stat_venv
+
+- name: Create virtualenv
+  when: not stat_venv.stat.exists
+  vars:
+    virtualenv_pyz: "{{ create_python_venv_tempdir_path }}/virtualenv.pyz"
+  block:
+    - name: Download virtualenv - {{ create_python_venv_pretty_name }}
+      ansible.builtin.import_role:
+        name: download_python_virtualenv_pyz
+        allow_duplicates: false
+      vars:
+        download_python_virtualenv_pyz_dir: >-
+          {{ create_python_venv_tempdir_path }}
+
+    - name: Create virtualenv - {{ create_python_venv_pretty_name }}
+      ansible.builtin.command:
+        argv:
+          - "{{ ansible_python.executable }}"
+          - "{{ virtualenv_pyz }}"
+          - -p={{ create_python_venv_python_exe }}
+          - "{{ create_python_venv_dir }}"
+        creates: "{{ create_python_venv_dir }}/bin/python3"
+
+    - name: Install Python Packages - {{ create_python_venv_pretty_name }}
+      ansible.builtin.pip:
+        virtualenv: "{{ create_python_venv_dir }}"
+        state: latest  # noqa package-latest
+        name: "{{ create_python_venv_packages }}"
