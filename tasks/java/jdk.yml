@@ -6,7 +6,7 @@
   tags: jdk
   vars:
     jdk_install_dir: >-
-      {{ java_opt_dir }}/java-{{ jdk.jdk_version | split('.') | first }}.jdk
+      {{ java_opt_dir }}/java-{{ jdk.java_version | split('.') | first }}.jdk
   block:
     - name: Check if JDK exists
       ansible.builtin.stat:
