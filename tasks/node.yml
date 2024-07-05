@@ -52,6 +52,20 @@
       with_fileglob:
         - "{{ node_install_dir }}/{{ node_archive_name }}/bin/*"
 
+    # NOTE: `corepack enable` won't overwrite existing symlinks
+    - name: Link Yarn and PNPM
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ common_bin }}/{{ item | basename | splitext | first }}"
+      vars:
+        corepack_dir: "{{ node_install_dir }}/{{ node_archive_name }}/lib/node_modules/corepack"  # yamllint disable-line rule:line-length
+      with_fileglob:
+        - "{{ corepack_dir }}/dist/pnpm.js"
+        - "{{ corepack_dir }}/dist/pnpx.js"
+        - "{{ corepack_dir }}/dist/yarn.js"
+        - "{{ corepack_dir }}/dist/yarnpkg.js"
+
     - name: Purge Old Node.js
       ansible.builtin.import_role:
         name: purge_old_install
