@@ -5,9 +5,9 @@
 - name: Ensure Eclipse JDT Language Server & Purge Old Versions
   vars:
     # https://download.eclipse.org/jdtls/milestones
-    jdtls_version: 1.36.0
-    jdtls_archive_name: jdt-language-server-{{ jdtls_version }}-202405301306  # yamllint disable-line rule:line-length
-    jdtls_sha256: 028e274d06f4a61cad4ffd56f89ef414a8f65613c6d05d9467651b7fb03dae7b  # yamllint disable-line rule:line-length
+    jdtls_version: 1.37.0
+    jdtls_archive_name: jdt-language-server-{{ jdtls_version }}-202406271335  # yamllint disable-line rule:line-length
+    jdtls_sha256: d04cd9f4df45ce85ae9cf49530c72a1a324b14eee747af26e3374500e36b5bd0  # yamllint disable-line rule:line-length
     jdtls_opt_dir: "{{ java_opt_dir }}/jdtls-{{ jdtls_version }}"
     jdtls_install_dir: "{{ jdtls_opt_dir }}/{{ jdtls_archive_name }}"
   block:
