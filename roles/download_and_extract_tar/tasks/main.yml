@@ -43,6 +43,7 @@
             mode: "755"
 
         - name: Unarchive tar - {{ pretty_name }}
+          when: (archive_name | splitext | last) != ".zip"
           ansible.builtin.unarchive:
             src: "{{ tempdir_path }}/{{ archive_name }}"
             dest: "{{ opt_dir }}/{{ install_dir }}"
@@ -51,3 +52,12 @@
             mode: "755"
             extra_opts:
               - --strip-components={{ strip_components }}
+
+        - name: Unzip - {{ pretty_name }}
+          when: (archive_name | splitext | last) == ".zip"
+          ansible.builtin.unarchive:
+            src: "{{ tempdir_path }}/{{ archive_name }}"
+            dest: "{{ opt_dir }}/{{ install_dir }}"
+            remote_src: true
+            creates: "{{ opt_dir }}/{{ install_dir }}/{{ verify }}"
+            mode: "755"
