@@ -55,6 +55,7 @@
       loop: "{{ go_packages }}"
 
     - name: Purge Old Go
+      become: true
       ansible.builtin.import_role:
         name: purge_old_install
       vars:
