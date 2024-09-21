@@ -42,4 +42,3 @@ repos:
           - prettier@latest
         types_or:
           - markdown
-          - yaml
