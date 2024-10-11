@@ -5,12 +5,12 @@
 - name: Setup Python
   when: ansible_machine == "arm64"
   vars:
-    cpython_version: 3.12.0
+    cpython_version: 3.13.0
     python_opt_dir: "{{ common_opt }}/python-{{ cpython_version }}"
     python_exe: "{{ python_opt_dir }}/cpython/python/install/bin/python3"
-    cpython_release_tag: "20231002"
+    cpython_release_tag: "20241008"
     cpython_archive_name: cpython-{{ cpython_version }}+{{ cpython_release_tag }}-aarch64-apple-darwin-pgo+lto-full  # yamllint disable-line rule:line-length
-    cpython_sha256: 25fc8cd41e975d18d13bcc8f8beffa096ff8a0b86c4a737e1c6617900092c966  # yamllint disable-line rule:line-length
+    cpython_sha256: 834b674dd1430267ed3b2be6107e637ac42edc5007ef35dce0ac163a03038caf  # yamllint disable-line rule:line-length
   block:
     - name: Ensure opt Folder
       ansible.builtin.file:
@@ -48,3 +48,11 @@
     - name: Ansible
       ansible.builtin.import_tasks: tasks/python/ansible.yml
       tags: ansible
+
+    - name: Purge Old CPython 3
+      ansible.builtin.import_role:
+        name: purge_old_install
+      vars:
+        purge_old_install_new_install: "{{ python_opt_dir }}"
+        purge_old_install_pattern: python-*
+        purge_old_install_pretty_name: CPython 3
