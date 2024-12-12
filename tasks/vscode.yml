@@ -21,3 +21,8 @@
     - zhuangtongfa.material-theme
   register: result
   changed_when: "'successfully installed' in result.stdout"
+
+- name: Update Visual Studio Code Extensions
+  ansible.builtin.command: code --update-extensions
+  register: result
+  changed_when: "'No extension to update' in result.stdout"
