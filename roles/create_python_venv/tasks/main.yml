@@ -34,8 +34,8 @@
           - "{{ create_python_venv_dir }}"
         creates: "{{ create_python_venv_dir }}/bin/python3"
 
-    - name: Install Python Packages - {{ create_python_venv_pretty_name }}
-      ansible.builtin.pip:
-        virtualenv: "{{ create_python_venv_dir }}"
-        state: latest  # noqa package-latest
-        name: "{{ create_python_venv_packages }}"
+- name: Install Python Packages - {{ create_python_venv_pretty_name }}
+  ansible.builtin.pip:
+    virtualenv: "{{ create_python_venv_dir }}"
+    state: latest  # noqa package-latest
+    name: "{{ create_python_venv_packages }}"
