@@ -28,7 +28,7 @@
         name: download_and_extract_tar
       vars:
         download_and_extract_tar_archive_name: "{{ cpython_archive_name }}.tar.zst"  # yamllint disable-line rule:line-length
-        download_and_extract_tar_download_url: https://github.com/indygreg/python-build-standalone/releases/download/{{ cpython_release_tag }}/{{ cpython_archive_name }}.tar.zst  # yamllint disable-line rule:line-length
+        download_and_extract_tar_download_url: https://github.com/astral-sh/python-build-standalone/releases/download/{{ cpython_release_tag }}/{{ cpython_archive_name }}.tar.zst  # yamllint disable-line rule:line-length
         download_and_extract_tar_install_dir: cpython
         download_and_extract_tar_opt_dir: "{{ python_opt_dir }}"
         download_and_extract_tar_pretty_name: CPython 3
