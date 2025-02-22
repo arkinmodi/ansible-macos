@@ -5,7 +5,7 @@
 - name: Install Rust
   when: ansible_machine == 'arm64'
   vars:
-    rust_version: 1.83.0
+    rust_version: 1.85.0
     rust_archive_name: rust-{{ rust_version }}
     rust_opt_dir: "{{ common_opt }}/{{ rust_archive_name }}"
 
