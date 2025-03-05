@@ -10,8 +10,8 @@
     rust_opt_dir: "{{ common_opt }}/{{ rust_archive_name }}"
 
     # https://rust-lang.github.io/rustup/installation/other.html
-    rustup_version: 1.27.1
-    rustup_sha256: 760b18611021deee1a859c345d17200e0087d47f68dfe58278c57abe3a0d3dd0  # yamllint disable-line rule:line-length
+    rustup_version: 1.28.0
+    rustup_sha256: 545d36042b524291c5b0689ee69e0d40ec825250c28f560d4c406788e417c1ba  # yamllint disable-line rule:line-length
     rustup_arch: aarch64-apple-darwin
 
     rust_components:
