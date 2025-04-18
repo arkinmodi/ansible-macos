@@ -5,9 +5,9 @@
 - name: Download Lombok JAR
   vars:
     # https://projectlombok.org/download
-    lombok_version: 1.18.36
+    lombok_version: 1.18.38
     lombok_archive_name: lombok-{{ lombok_version }}
-    lombok_sha256: 73b6b05b6a2d365b700bab08d30f94de9d336490bc0acce5b6181fef48cbf18e  # yamllint disable-line rule:line-length
+    lombok_sha256: 1e1e427c36ff63c44fd30ef292d9e773ea3154460ab6265d3fed7e6f5bc50fb9  # yamllint disable-line rule:line-length
   ansible.builtin.get_url:
     url: https://projectlombok.org/downloads/{{ lombok_archive_name }}.jar
     checksum: sha256:{{ lombok_sha256 }}
