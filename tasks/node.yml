@@ -14,7 +14,7 @@
     npm_packages:
       - "@ansible/ansible-language-server"
       - "@tailwindcss/language-server"
-      - graphql-language-service-server
+      - graphql-language-service-cli
       - markdown-toc
       - prettier
       - typescript
