@@ -7,7 +7,7 @@
     paths: "{{ purge_old_install_new_install | dirname }}"
     pattern: "{{ purge_old_install_pattern }}"
     file_type: directory
-  register: old_installs
+  register: purge_old_install_old_installs
 
 - name: Purge Old {{ purge_old_install_pretty_name }}
   ansible.builtin.file:
@@ -17,4 +17,4 @@
     paths_to_keep:
       - "{{ purge_old_install_new_install }}"
   when: item.path not in paths_to_keep
-  loop: "{{ old_installs.files }}"
+  loop: "{{ purge_old_install_old_installs.files }}"

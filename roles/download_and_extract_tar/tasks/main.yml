@@ -18,10 +18,12 @@
     - name: Check if target exists - {{ pretty_name }}
       ansible.builtin.stat:
         path: "{{ opt_dir }}/{{ install_dir }}/{{ verify }}"
-      register: stat_verify
+      register: download_and_extract_tar_stat_verify
 
     - name: Download and Extract Tarball
-      when: force_recreate or not stat_verify.stat.exists
+      when: >-
+        force_recreate
+        or not download_and_extract_tar_stat_verify.stat.exists
       block:
         - name: Download tar - {{ pretty_name }}
           ansible.builtin.get_url:
