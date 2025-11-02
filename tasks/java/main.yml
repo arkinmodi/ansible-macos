@@ -43,10 +43,10 @@
             is_primary_jdk: false
 
           # https://github.com/corretto/corretto-17/releases
-          - java_version: 17.0.11
-            jdk_version: 17.0.11.9.1
-            jdk_sha256: e2d4b5e34f4903278c8a8ba0582072a862fc6d6923ec6ce9f90130cf3cf787f8  # yamllint disable-line rule:line-length
-            jdk_archive_name: amazon-corretto-17.0.11.9.1-macosx-aarch64
+          - java_version: 17.0.17
+            jdk_version: 17.0.17.10.1
+            jdk_sha256: 61483f311a03c44dace8a7b2564aa3ed05f847b0c0c890dc390a4b9bf53342cb  # yamllint disable-line rule:line-length
+            jdk_archive_name: amazon-corretto-17.0.17.10.1-macosx-aarch64
             is_primary_jdk: false
 
     - name: Eclipse JDT Language Server
