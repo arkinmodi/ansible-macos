@@ -29,10 +29,10 @@
         # https://aws.amazon.com/corretto
         jdk_metadata:
           # https://github.com/corretto/corretto-25/releases
-          - java_version: 25.0.0
-            jdk_version: 25.0.0.36.2
-            jdk_sha256: 62dc483ae2d51d995e7ec756cda0a3b2491293946f3e9281cc2e9a1b8f11d1bd  # yamllint disable-line rule:line-length
-            jdk_archive_name: amazon-corretto-25.0.0.36.2-macosx-aarch64
+          - java_version: 25.0.1
+            jdk_version: 25.0.1.8.1
+            jdk_sha256: 8ae7d9b2292bca1f78ba736572c0e8129eb4f5914d6d63015c31529da16cf458  # yamllint disable-line rule:line-length
+            jdk_archive_name: amazon-corretto-25.0.1.8.1-macosx-aarch64
             is_primary_jdk: true
 
           # https://github.com/corretto/corretto-21/releases
