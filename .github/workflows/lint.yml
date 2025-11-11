@@ -14,9 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: ansible/ansible-lint@v25
         with:
-          python-version: 3.x
-      - run: python3 -m pip install ansible ansible-lint
-      - run: ansible-galaxy collection install -r requirements.yml
-      - run: ansible-lint
+          requirements_file: ./requirements.yml
