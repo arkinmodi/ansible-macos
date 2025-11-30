@@ -3,7 +3,7 @@
 # yamllint enable rule:line-length
 ---
 - name: Install Node.js
-  when: ansible_machine == 'arm64'
+  when: ansible_facts['machine'] == 'arm64'
   vars:
     node_sha256: 30bbe12b71f5b89ba44e15dc0cfaf3c733538d46ee375691534b7bbe622225cc  # yamllint disable-line rule:line-length
     node_version: 24.11.0
@@ -43,7 +43,7 @@
         state: latest
       loop: "{{ npm_packages }}"
       environment:
-        PATH: "{{ node_install_dir }}/{{ node_archive_name }}/bin:{{ ansible_env.PATH }}"  # yamllint disable-line rule:line-length
+        PATH: "{{ node_install_dir }}/{{ node_archive_name }}/bin:{{ ansible_facts['env'].PATH }}"  # yamllint disable-line rule:line-length
 
     - name: Link Node.js and NPM Package Binaries
       ansible.builtin.file:

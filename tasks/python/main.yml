@@ -3,7 +3,7 @@
 # yamllint enable rule:line-length
 ---
 - name: Setup Python
-  when: ansible_machine == "arm64"
+  when: ansible_facts['machine'] == "arm64"
   vars:
     cpython_version: 3.14.0
     python_opt_dir: "{{ common_opt }}/python-{{ cpython_version }}"

@@ -5,7 +5,7 @@
 - name: Setup dotfiles
   vars:
     dotfiles_github: git@github.com:arkinmodi/dotfiles
-    dotfiles_dir: "{{ ansible_user_dir }}/.dotfiles"
+    dotfiles_dir: "{{ ansible_facts['user_dir'] }}/.dotfiles"
   block:
     - name: Clone dotfiles Repo  # noqa latest[git]
       ansible.builtin.git:
@@ -17,7 +17,7 @@
     - name: Ensure Config Folder
       ansible.builtin.file:
         state: directory
-        path: "{{ ansible_user_dir }}/.config"
+        path: "{{ ansible_facts['user_dir'] }}/.config"
         mode: "755"
 
     - name: Link zsh Configurations
@@ -28,37 +28,37 @@
           ansible.builtin.file:
             state: link
             src: "{{ dotfiles_zsh }}/.config/zsh"
-            dest: "{{ ansible_user_dir }}/.config/zsh"
+            dest: "{{ ansible_facts['user_dir'] }}/.config/zsh"
 
         - name: Link zsh Home Redirect Configuration
           ansible.builtin.file:
             state: link
             src: "{{ dotfiles_zsh }}/.zshenv"
-            dest: "{{ ansible_user_dir }}/.zshenv"
+            dest: "{{ ansible_facts['user_dir'] }}/.zshenv"
 
     - name: Link git Configurations
       ansible.builtin.file:
         state: link
         src: "{{ dotfiles_dir }}/git/.config/git"
-        dest: "{{ ansible_user_dir }}/.config/git"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/git"
 
     - name: Link Alacritty Configurations
       ansible.builtin.file:
         state: link
         src: "{{ dotfiles_dir }}/alacritty/.config/alacritty"
-        dest: "{{ ansible_user_dir }}/.config/alacritty"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/alacritty"
 
     - name: Link Neovim Configurations
       ansible.builtin.file:
         state: link
         src: "{{ dotfiles_dir }}/nvim/.config/nvim"
-        dest: "{{ ansible_user_dir }}/.config/nvim"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/nvim"
 
     - name: Link tmux Configurations
       ansible.builtin.file:
         state: link
         src: "{{ dotfiles_dir }}/tmux/.config/tmux"
-        dest: "{{ ansible_user_dir }}/.config/tmux"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/tmux"
 
     - name: Link User Scripts
       ansible.builtin.file:
@@ -72,10 +72,10 @@
       ansible.builtin.file:
         state: link
         src: "{{ dotfiles_dir }}/yabai/.config/yabai"
-        dest: "{{ ansible_user_dir }}/.config/yabai"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/yabai"
 
     - name: Link skhd Configurations
       ansible.builtin.file:
         state: link
         src: "{{ dotfiles_dir }}/skhd/.config/skhd"
-        dest: "{{ ansible_user_dir }}/.config/skhd"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/skhd"

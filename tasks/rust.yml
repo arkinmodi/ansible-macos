@@ -3,7 +3,7 @@
 # yamllint enable rule:line-length
 ---
 - name: Install Rust
-  when: ansible_machine == 'arm64'
+  when: ansible_facts['machine'] == 'arm64'
   vars:
     rust_version: 1.91.0
     rust_archive_name: rust-{{ rust_version }}

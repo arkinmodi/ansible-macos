@@ -9,7 +9,7 @@
     - name: Stop if not macOS
       ansible.builtin.fail:
         msg: This playbook is only for macOS.
-      when: ansible_os_family != 'Darwin'
+      when: ansible_facts['os_family'] != 'Darwin'
       tags: always
 
     - name: Update Homebrew
@@ -34,8 +34,8 @@
       tags: always
 
   vars:
-    common_bin: "{{ ansible_user_dir }}/bin"
-    common_opt: "{{ ansible_user_dir }}/opt"
+    common_bin: "{{ ansible_facts['user_dir'] }}/bin"
+    common_opt: "{{ ansible_facts['user_dir'] }}/opt"
 
   tasks:
     - name: Homebrew

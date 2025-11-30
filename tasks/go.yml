@@ -3,7 +3,7 @@
 # yamllint enable rule:line-length
 ---
 - name: Download and Install Go & Purge Old Go
-  when: ansible_machine == 'arm64'
+  when: ansible_facts['machine'] == 'arm64'
   vars:
     go_sha256: 7c083e3d2c00debfeb2f77d9a4c00a1aac97113b89b9ccc42a90487af3437382  # yamllint disable-line rule:line-length
     go_version: 1.25.3

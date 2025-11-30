@@ -19,7 +19,7 @@
         - lombok
 
     - name: Download and Install Java
-      when: ansible_machine == "arm64"
+      when: ansible_facts['machine'] == "arm64"
       ansible.builtin.include_tasks: tasks/java/jdk.yml
       loop: "{{ jdk_metadata }}"
       loop_control:

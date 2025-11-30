@@ -8,4 +8,4 @@
     path: "{{ item }}"
     mode: "755"
   loop:
-    - "{{ ansible_user_dir }}/code/sandbox"
+    - "{{ ansible_facts['user_dir'] }}/code/sandbox"
