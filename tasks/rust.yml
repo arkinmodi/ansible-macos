@@ -32,6 +32,8 @@
         binary_name: rg
       - package_name: stylua
         binary_name: stylua
+      - package_name: tree-sitter-cli
+        binary_name: tree-sitter
   environment:
     CARGO_HOME: "{{ rust_opt_dir }}/.cargo"
     RUSTUP_HOME: "{{ rust_opt_dir }}/.rustup"
