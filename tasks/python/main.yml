@@ -5,12 +5,12 @@
 - name: Setup Python
   when: ansible_facts['machine'] == "arm64"
   vars:
-    cpython_version: 3.14.0
+    cpython_version: 3.14.2
     python_opt_dir: "{{ common_opt }}/python-{{ cpython_version }}"
     python_exe: "{{ python_opt_dir }}/cpython/python/install/bin/python3"
-    cpython_release_tag: "20251007"
+    cpython_release_tag: "20251217"
     cpython_archive_name: cpython-{{ cpython_version }}+{{ cpython_release_tag }}-aarch64-apple-darwin-pgo+lto-full  # yamllint disable-line rule:line-length
-    cpython_sha256: d8021f4b4046b6bd392757a09739242a7a991058bd0c5e2e06bbb4f00daee71f  # yamllint disable-line rule:line-length
+    cpython_sha256: 8aecfab5b2f62fa0d64f6fc20253cc4f323225beb3a8ea1bdb0555a805268f3e  # yamllint disable-line rule:line-length
   block:
     - name: Ensure opt Folder
       ansible.builtin.file:
