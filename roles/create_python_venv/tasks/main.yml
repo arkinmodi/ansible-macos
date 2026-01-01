@@ -31,7 +31,7 @@
     - name: Create virtualenv - {{ create_python_venv_pretty_name }}
       ansible.builtin.command:
         argv:
-          - "{{ ansible_python.executable }}"
+          - "{{ ansible_facts['python'].executable }}"
           - "{{ virtualenv_pyz }}"
           - -p={{ create_python_venv_python_exe }}
           - "{{ create_python_venv_dir }}"
