@@ -8,6 +8,7 @@
     name:
       - clang-format
       - lua-language-server
+      - luarocks
 
       # Build deps
       - ccache
