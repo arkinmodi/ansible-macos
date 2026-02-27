@@ -5,8 +5,8 @@
 - name: Install Node.js
   when: ansible_facts['machine'] == 'arm64'
   vars:
-    node_sha256: 30bbe12b71f5b89ba44e15dc0cfaf3c733538d46ee375691534b7bbe622225cc  # yamllint disable-line rule:line-length
-    node_version: 24.11.0
+    node_sha256: 448f01d4dfa5a21d280cfbacf00abc22b51aad52f38db0f4886e0e5d00df541d  # yamllint disable-line rule:line-length
+    node_version: 24.14.0
     node_archive_name: node-v{{ node_version }}-darwin-arm64
     node_opt_dir: "{{ common_opt }}/node-{{ node_version }}"
     node_install_dir: "{{ node_opt_dir }}/{{ node_archive_name }}"
