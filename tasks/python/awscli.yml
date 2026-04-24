@@ -6,23 +6,24 @@
   vars:
     target_venv: "{{ python_opt_dir }}/awscli-venv"
     python_packages:
-      - awscli
-      - aws-sam-cli
+      - package_name: aws-sam-cli
+        binary_name: sam
+      - package_name: git+https://github.com/aws/aws-cli.git@2.34.37
+        binary_name: aws
   block:
     - name: Create virtualenv
       ansible.builtin.import_role:
         name: create_python_venv
       vars:
         create_python_venv_dir: "{{ target_venv }}"
-        create_python_venv_packages: "{{ python_packages }}"
+        create_python_venv_packages: >-
+          {{ python_packages | map(attribute='package_name') | list }}
         create_python_venv_python_exe: "{{ python_exe }}"
         create_python_venv_tempdir_path: "{{ tempdir.path }}"
 
     - name: Link AWS CLI Package Binaries
       ansible.builtin.file:
         state: link
-        src: "{{ item }}"
-        dest: "{{ ansible_facts['user_dir'] }}/bin/{{ item | basename }}"
-      with_fileglob:
-        - "{{ target_venv }}/bin/aws"
-        - "{{ target_venv }}/bin/sam"
+        src: "{{ target_venv }}/bin/{{ item.binary_name }}"
+        dest: "{{ ansible_facts['user_dir'] }}/bin/{{ item.binary_name }}"
+      loop: "{{ python_packages }}"
