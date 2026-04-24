@@ -6,8 +6,6 @@
   vars:
     target_venv: "{{ python_opt_dir }}/awscli-venv"
     python_packages:
-      - package_name: aws-sam-cli
-        binary_name: sam
       - package_name: git+https://github.com/aws/aws-cli.git@2.34.37
         binary_name: aws
   block:
