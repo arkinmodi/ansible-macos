@@ -37,7 +37,7 @@
     state: present
     name:
       - 1password
-      - 1password-cli
+      - 1password-cli@beta
       - alacritty
       - firefox
       - font-jetbrains-mono-nerd-font
