@@ -79,3 +79,9 @@
         state: link
         src: "{{ dotfiles_dir }}/skhd/.config/skhd"
         dest: "{{ ansible_facts['user_dir'] }}/.config/skhd"
+
+    - name: Link Ghostty Configurations
+      ansible.builtin.file:
+        state: link
+        src: "{{ dotfiles_dir }}/ghostty/.config/ghostty"
+        dest: "{{ ansible_facts['user_dir'] }}/.config/ghostty"
