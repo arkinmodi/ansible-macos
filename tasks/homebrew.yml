@@ -32,6 +32,12 @@
       - gnu-sed
       - gnu-tar
 
+- name: Setup Homebrew Taps
+  community.general.homebrew_tap:
+    state: present
+    name:
+      - thusvill/livewallpaper
+
 - name: Install Homebrew Cask Packages
   community.general.homebrew_cask:
     state: present
@@ -44,6 +50,7 @@
       - ghostty
       - google-chrome
       - iterm2
+      - livewallpaper
       - the-unarchiver
       - vlc
 
