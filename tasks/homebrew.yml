@@ -41,6 +41,7 @@
       - alacritty
       - firefox
       - font-jetbrains-mono-nerd-font
+      - ghostty
       - google-chrome
       - iterm2
       - the-unarchiver
