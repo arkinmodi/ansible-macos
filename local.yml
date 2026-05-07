@@ -82,6 +82,12 @@
       ansible.builtin.import_tasks: tasks/rust.yml
       tags: rust
 
+    - name: C# and .NET
+      ansible.builtin.import_tasks: tasks/csharp.yml
+      tags:
+        - csharp
+        - dotnet
+
     - name: Podman
       ansible.builtin.import_tasks: tasks/podman.yml
       tags: podman

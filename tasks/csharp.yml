@@ -1,0 +1,128 @@
+# yamllint disable rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks
+# yamllint enable rule:line-length
+---
+- name: Install C# and .NET
+  when: ansible_facts['machine'] == "arm64"
+  vars:
+    dotnet_sha256: cbf1c5066ff2083a6f21bd1b2aaee6c51567d084e2f1dd90dfcd558541144f20  # yamllint disable-line rule:line-length
+    dotnet_version: 10.0.203
+    dotnet_archive_name: dotnet-sdk-{{ dotnet_version }}-osx-arm64
+    dotnet_opt_dir: "{{ common_opt }}/dotnet-{{ dotnet_version }}"
+    dotnet_install_dir: "{{ dotnet_opt_dir }}/{{ dotnet_archive_name }}"
+  block:
+    - name: Download and Extract Tarball
+      ansible.builtin.import_role:
+        name: download_and_extract_tar
+      vars:
+        download_and_extract_tar_archive_name: "{{ dotnet_archive_name }}.tar.gz"  # yamllint disable-line rule:line-length
+        download_and_extract_tar_download_url: https://builds.dotnet.microsoft.com/dotnet/Sdk/{{ dotnet_version }}/{{ dotnet_archive_name }}.tar.gz  # yamllint disable-line rule:line-length
+        download_and_extract_tar_install_dir: "{{ dotnet_archive_name }}"
+        download_and_extract_tar_opt_dir: "{{ dotnet_opt_dir }}"
+        download_and_extract_tar_pretty_name: .NET
+        download_and_extract_tar_sha256: "{{ dotnet_sha256 }}"
+        download_and_extract_tar_tempdir_path: "{{ tempdir.path }}"
+        download_and_extract_tar_verify: dotnet
+
+    - name: Link .NET Binary
+      ansible.builtin.file:
+        state: link
+        src: "{{ item }}"
+        dest: "{{ common_bin }}/{{ item | basename }}"
+      with_items:
+        - "{{ dotnet_install_dir }}/dotnet"
+
+    - name: Purge Old .NET
+      ansible.builtin.import_role:
+        name: purge_old_install
+      vars:
+        purge_old_install_new_install: "{{ dotnet_opt_dir }}"
+        purge_old_install_pattern: dotnet*
+        purge_old_install_pretty_name: .NET
+
+- name: Install Roslyn (C# LSP)
+  vars:
+    roslyn_version: 5.8.0-1.26256.1
+    roslyn_opt_dir: "{{ common_opt }}/roslyn-{{ roslyn_version }}"
+  block:
+    # yamllint disable rule:line-length
+
+    # NOTE: Run the following to get the latest version of roslyn
+    # ```sh
+    # curl 'https://feeds.dev.azure.com/azure-public/vside/_apis/packaging/Feeds/vs-impl/packages/9078f0b1-e4ad-4cae-8538-7d137417390f/versions?api-version=7.2-preview.1' \
+    #   | jq -r '.value[].version' | sort | tail -1
+    # ```
+    #
+    # Can also run this to get the versions used by the Visual Studio Code C# Extension:
+    # ```sh
+    # curl https://raw.githubusercontent.com/dotnet/vscode-csharp/refs/heads/main/package.json | jq '.["defaults"]'
+    # ```
+    #
+    # Used https://github.com/Crashdummyy/roslynLanguageServer to figure this out.
+    #
+    # Can also manually download version from
+    # https://dev.azure.com/azure-public/vside/_artifacts/feed/vs-impl/NuGet/Microsoft.CodeAnalysis.LanguageServer.osx-arm64/versions
+
+    # yamllint enable rule:line-length
+
+    - name: Check if Roslyn exists
+      ansible.builtin.stat:
+        path: "{{ roslyn_opt_dir }}/roslyn-language-server.osx-arm64/{{ roslyn_version }}/tools/net10.0/osx-arm64/Microsoft.CodeAnalysis.LanguageServer.dll"  # yamllint disable-line rule:line-length
+      register: roslyn_stat_verify
+
+    - name: Install Roslyn
+      when: not roslyn_stat_verify.stat.exists
+      block:
+        - name: Ensure opt folder
+          ansible.builtin.file:
+            state: directory
+            path: "{{ roslyn_opt_dir }}"
+            mode: "755"
+
+        - name: Create temporary file
+          ansible.builtin.tempfile:
+            state: file
+            suffix: .csproj
+          register: csproj_tempfile
+
+        # yamllint disable rule:line-length
+        - name: Create csharp project file
+          ansible.builtin.copy:
+            dest: "{{ csproj_tempfile.path }}"
+            mode: "644"
+            content: |
+              <Project Sdk="Microsoft.Build.NoTargets/1.0.80">
+                  <PropertyGroup>
+                      <RestorePackagesPath>out</RestorePackagesPath>
+                      <TargetFramework>net10.0</TargetFramework>
+                      <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+                      <AutomaticallyUseReferenceAssemblyPackages>false</AutomaticallyUseReferenceAssemblyPackages>
+                  </PropertyGroup>
+                  <ItemGroup>
+                    <PackageDownload Include="roslyn-language-server.osx-arm64" version="[{{ roslyn_version }}]" />
+                  </ItemGroup>
+              </Project>
+        # yamllint enable rule:line-length
+
+        - name: Download Roslyn Language Server
+          ansible.builtin.command:
+            argv:
+              - dotnet
+              - restore
+              - --source=https://pkgs.dev.azure.com/azure-public/vside/_packaging/vs-impl/nuget/v3/index.json
+              - --packages={{ roslyn_opt_dir }}
+              - "{{ csproj_tempfile.path }}"
+          changed_when: true
+
+    # yamllint disable rule:line-length
+    - name: Create Roslyn binary
+      ansible.builtin.copy:
+        dest: "{{ common_bin }}/roslyn"
+        mode: "755"
+        content: |
+          #!/usr/bin/env bash
+
+          dotnet \
+              '{{ roslyn_opt_dir }}/roslyn-language-server.osx-arm64/{{ roslyn_version }}/tools/net10.0/osx-arm64/Microsoft.CodeAnalysis.LanguageServer.dll' \
+              "$@"
+    # yamllint enable rule:line-length
