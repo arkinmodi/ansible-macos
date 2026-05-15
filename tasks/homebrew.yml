@@ -10,12 +10,13 @@
   community.general.homebrew:
     state: present
     name:
-      - bitwarden-cli
+      - anomalyco/tap/opencode
       - btop
       - coreutils
       - fzf
       - git
       - jq
+      - ollama
       - parallel
       - pkl
       - pstree
