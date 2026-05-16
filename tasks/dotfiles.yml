@@ -68,18 +68,6 @@
       with_fileglob:
         - "{{ dotfiles_dir }}/scripts/*"
 
-    - name: Link yabai Configurations
-      ansible.builtin.file:
-        state: link
-        src: "{{ dotfiles_dir }}/yabai/.config/yabai"
-        dest: "{{ ansible_facts['user_dir'] }}/.config/yabai"
-
-    - name: Link skhd Configurations
-      ansible.builtin.file:
-        state: link
-        src: "{{ dotfiles_dir }}/skhd/.config/skhd"
-        dest: "{{ ansible_facts['user_dir'] }}/.config/skhd"
-
     - name: Link Ghostty Configurations
       ansible.builtin.file:
         state: link
