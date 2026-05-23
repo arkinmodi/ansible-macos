@@ -11,6 +11,10 @@
     ```sh
     brew install ansible
     ```
+1. Update Ansible Collections
+    ```sh
+    ansible-galaxy collection install -r requirements.yml --upgrade
+    ```
 1. Run setup playbook
 
     ```sh
