@@ -6,6 +6,13 @@
   community.general.homebrew:
     upgrade_all: true
 
+- name: Setup Homebrew Taps
+  community.general.homebrew_tap:
+    state: present
+    name:
+      - anomalyco/tap
+      - thusvill/livewallpaper
+
 - name: Install Homebrew Packages
   community.general.homebrew:
     state: present
@@ -33,19 +40,12 @@
       - gnu-sed
       - gnu-tar
 
-- name: Setup Homebrew Taps
-  community.general.homebrew_tap:
-    state: present
-    name:
-      - thusvill/livewallpaper
-
 - name: Install Homebrew Cask Packages
   community.general.homebrew_cask:
     state: present
     name:
       - 1password
       - 1password-cli@beta
-      - alacritty
       - anki
       - firefox
       - font-jetbrains-mono-nerd-font
