@@ -11,7 +11,7 @@
     ```sh
     brew install ansible
     ```
-1. Update Ansible Collections
+1. (Optional) Update Ansible Collections
     ```sh
     ansible-galaxy collection install -r requirements.yml --upgrade
     ```

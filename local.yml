@@ -12,6 +12,13 @@
       when: ansible_facts['os_family'] != 'Darwin'
       tags: always
 
+    - name: Update Ansible Collections
+      community.general.ansible_galaxy_install:
+        requirements_file: ./requirements.yml
+        state: latest
+        type: both
+      tags: always
+
     - name: Update Homebrew
       community.general.homebrew:
         update_homebrew: true
