@@ -36,10 +36,10 @@
             is_primary_jdk: true
 
           # https://github.com/corretto/corretto-21/releases
-          - java_version: 21.0.9
-            jdk_version: 21.0.9.10.1
-            jdk_sha256: b6400ac47dd93a98e5191dc8b3e87a412390ecdc0b42a1b6105069f3c76a290c  # yamllint disable-line rule:line-length
-            jdk_archive_name: amazon-corretto-21.0.9.10.1-macosx-aarch64
+          - java_version: 21.0.11
+            jdk_version: 21.0.11.10.1
+            jdk_sha256: c6c9ba09ef0ae741aa04cfbd5ef8a6b75dd2d26034a1de0808ee7976a04446ea  # yamllint disable-line rule:line-length
+            jdk_archive_name: amazon-corretto-21.0.11.10.1-macosx-aarch64
             is_primary_jdk: false
 
           # https://github.com/corretto/corretto-17/releases
