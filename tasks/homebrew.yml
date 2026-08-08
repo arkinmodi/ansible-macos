@@ -28,6 +28,7 @@
       - pkl
       - pstree
       - rlwrap
+      - shellcheck
       - tmux
       - tree
       - watch
