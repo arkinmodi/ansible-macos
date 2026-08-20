@@ -20,6 +20,7 @@
       - anomalyco/tap/opencode
       - btop
       - coreutils
+      - expect
       - fzf
       - git
       - jq
