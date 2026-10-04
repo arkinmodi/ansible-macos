@@ -5,8 +5,8 @@
 - name: Install C# and .NET
   when: ansible_facts['machine'] == "arm64"
   vars:
-    dotnet_sha256: cbf1c5066ff2083a6f21bd1b2aaee6c51567d084e2f1dd90dfcd558541144f20  # yamllint disable-line rule:line-length
-    dotnet_version: 10.0.203
+    dotnet_sha256: d143ccec4474dce17d7b778854598137a2599b81828bce51e809897fe8bdf035  # yamllint disable-line rule:line-length
+    dotnet_version: 10.0.401
     dotnet_archive_name: dotnet-sdk-{{ dotnet_version }}-osx-arm64
     dotnet_opt_dir: "{{ common_opt }}/dotnet-{{ dotnet_version }}"
     dotnet_install_dir: "{{ dotnet_opt_dir }}/{{ dotnet_archive_name }}"
