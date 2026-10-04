@@ -42,20 +42,20 @@
 
 - name: Install Roslyn (C# LSP)
   vars:
-    roslyn_version: 5.8.0-1.26256.1
+    roslyn_version: 5.9.0-1.26477.8
     roslyn_opt_dir: "{{ common_opt }}/roslyn-{{ roslyn_version }}"
   block:
     # yamllint disable rule:line-length
 
     # NOTE: Run the following to get the latest version of roslyn
     # ```sh
-    # curl 'https://feeds.dev.azure.com/azure-public/vside/_apis/packaging/Feeds/vs-impl/packages/9078f0b1-e4ad-4cae-8538-7d137417390f/versions?api-version=7.2-preview.1' \
+    # curl --location --silent 'https://feeds.dev.azure.com/azure-public/vside/_apis/packaging/Feeds/vs-impl/packages/9078f0b1-e4ad-4cae-8538-7d137417390f/versions?api-version=7.2-preview.1' \
     #   | jq -r '.value[].version' | sort | tail -1
     # ```
     #
     # Can also run this to get the versions used by the Visual Studio Code C# Extension:
     # ```sh
-    # curl https://raw.githubusercontent.com/dotnet/vscode-csharp/refs/heads/main/package.json | jq '.["defaults"]'
+    # curl --location --silent https://raw.githubusercontent.com/dotnet/vscode-csharp/refs/heads/main/package.json | jq '.["defaults"]'
     # ```
     #
     # Used https://github.com/Crashdummyy/roslynLanguageServer to figure this out.
