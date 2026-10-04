@@ -6,7 +6,7 @@
   vars:
     target_venv: "{{ python_opt_dir }}/awscli-venv"
     python_packages:
-      - package_name: git+https://github.com/aws/aws-cli.git@2.36.28
+      - package_name: git+https://github.com/aws/aws-cli.git@2.37.9
         binary_name: aws
   block:
     - name: Create virtualenv
