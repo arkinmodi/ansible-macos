@@ -5,8 +5,8 @@
 - name: Download and Install Go & Purge Old Go
   when: ansible_facts['machine'] == 'arm64'
   vars:
-    go_sha256: ee215d57e0ec269c60cc9ceca68e6bda321ba9ee5afe24f4b0988703c2d87d12  # yamllint disable-line rule:line-length
-    go_version: 1.27.1
+    go_sha256: 91a44a2b8a716600ad94a4f143e156116620db8828086a6e3602291be9bd0bb4  # yamllint disable-line rule:line-length
+    go_version: 1.27.4
     go_archive_name: go{{ go_version }}.darwin-arm64
     go_opt_dir: "{{ common_opt }}/go-{{ go_version }}"
     go_install_dir: "{{ go_opt_dir }}/{{ go_archive_name }}"
